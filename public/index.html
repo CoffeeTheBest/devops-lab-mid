@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./style.css?v=7.0">
+  <link rel="stylesheet" href="./style.css?v=8.0">
 
   <style>
     /* ==========================================================================
@@ -57,6 +57,21 @@
       --font-pixel: 'Silkscreen', monospace;
       --font-mono: 'JetBrains Mono', monospace;
       --font-hud: 'Share Tech Mono', monospace;
+
+      /* Omarchy-Inspired 5-Tone Field & Gradient Color Bands */
+      --t-field-bg: #05060a;
+      --t-field-dim: #1f1338;
+      --t-field-mid: #581c87;
+      --t-field-lit: #a855f7;
+      --t-field-hover: #c084fc;
+      --t-field-crest: #f5f3ff;
+      --omarchy-band-gradient: linear-gradient(to right,
+        var(--t-field-dim) 0% 26.316%,
+        var(--t-field-mid) 26.316% 36.842%,
+        var(--t-field-lit) 36.842% 57.895%,
+        var(--t-field-hover) 57.895% 73.684%,
+        var(--t-field-crest) 73.684% 100%
+      );
     }
 
     *, *::before, *::after {
@@ -128,15 +143,18 @@
       position: relative;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      /* Cosmic pinpoint starfield + subtle nebula grid */
-      background-image: 
-        radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-        radial-gradient(1px 1px at 40px 70px, #818cf8, rgba(0,0,0,0)),
-        radial-gradient(1px 1px at 90px 40px, #c084fc, rgba(0,0,0,0)),
-        radial-gradient(1.5px 1.5px at 160px 120px, #ffffff, rgba(0,0,0,0)),
-        linear-gradient(rgba(168, 85, 247, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(168, 85, 247, 0.02) 1px, transparent 1px);
-      background-size: 250px 250px, 200px 200px, 300px 300px, 400px 400px, 32px 32px, 32px 32px;
+    }
+
+    /* Omarchy-Inspired Fullscreen Canvas Layer */
+    .omarchy-hero-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      display: block;
     }
 
     /* Subtle CRT scanline simulation */
@@ -177,7 +195,8 @@
        -------------------------------------------------------------------------- */
     .cosmic-banner {
       border: 1px solid var(--starlight-border-active);
-      background-color: var(--space-panel);
+      background-color: rgba(14, 17, 26, 0.94);
+      backdrop-filter: blur(8px);
       padding: 14px 20px;
       margin-bottom: 20px;
       display: flex;
@@ -185,7 +204,19 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    .cosmic-banner::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 2px;
+      background: var(--omarchy-band-gradient);
+      pointer-events: none;
     }
 
     .brand-section {
@@ -198,12 +229,22 @@
       font-family: var(--font-pixel);
       font-size: 11px;
       font-weight: 700;
-      background: var(--nebula-deep);
-      color: var(--starlight-pure);
+      background-color: var(--nebula-dim);
+      background-image: linear-gradient(to bottom,
+        var(--t-field-crest) 0% 26.316%,
+        var(--t-field-hover) 26.316% 36.842%,
+        var(--t-field-lit) 36.842% 57.895%,
+        var(--t-field-mid) 57.895% 73.684%,
+        var(--t-field-dim) 73.684% 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: var(--t-field-crest);
       padding: 8px 12px;
       letter-spacing: 0.08em;
       border: 1px solid var(--nebula-primary);
-      text-shadow: 0 0 8px var(--nebula-glow);
+      box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
     }
 
     .brand-details {
@@ -308,17 +349,31 @@
        CARD WRAPPERS (BRUTALIST OBSIDIAN PANELS)
        -------------------------------------------------------------------------- */
     .cockpit-card {
-      background-color: var(--space-panel);
+      background-color: rgba(14, 17, 26, 0.94);
+      backdrop-filter: blur(8px);
       border: 1px solid var(--starlight-border);
       padding: 18px 20px;
       position: relative;
       display: flex;
       flex-direction: column;
-      transition: border-color 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
     }
 
     .cockpit-card:hover {
       border-color: var(--starlight-border-active);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.7);
+    }
+
+    .cockpit-card::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 2px;
+      background: var(--omarchy-band-gradient);
+      pointer-events: none;
     }
 
     .card-terminal-bar {
@@ -886,9 +941,22 @@
        -------------------------------------------------------------------------- */
     .cockpit-footer-rack {
       border: 1px solid var(--starlight-border-active);
-      background-color: var(--space-panel);
+      background-color: rgba(14, 17, 26, 0.94);
+      backdrop-filter: blur(8px);
       padding: 16px 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    .cockpit-footer-rack::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 2px;
+      background: var(--omarchy-band-gradient);
+      pointer-events: none;
     }
 
     .rack-header-bar {
@@ -991,6 +1059,9 @@
   </style>
 </head>
 <body>
+  <!-- Omarchy-Inspired Etched Pixel Dither Canvas Layer -->
+  <canvas id="omarchyHeroCanvas" class="omarchy-hero-canvas" aria-hidden="true"></canvas>
+
   <div class="cockpit-viewport">
 
     <!-- TOP HEADER / COSMIC HUD -->
@@ -1254,6 +1325,6 @@
 
   </div>
 
-  <script src="./app.js?v=7.0"></script>
+  <script src="./app.js?v=8.0"></script>
 </body>
 </html>
