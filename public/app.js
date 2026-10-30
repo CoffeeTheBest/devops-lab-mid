@@ -18,6 +18,7 @@ const resetBtn = document.getElementById('resetBtn');
 const quickFillBtn = document.getElementById('quickFillBtn');
 const refreshBtn = document.getElementById('refreshBtn');
 const filterInput = document.getElementById('filterInput');
+const filterModeSelect = document.getElementById('filterModeSelect');
 const submissionsList = document.getElementById('submissionsList');
 const submissionsCount = document.getElementById('submissionsCount');
 const formAlert = document.getElementById('formAlert');
@@ -102,7 +103,7 @@ async function detectBackend() {
   isBackendLive = false;
   modeText.textContent = 'HOST: [STANDALONE]';
   modeText.parentElement.style.borderColor = 'var(--starlight-border-active)';
-  modeText.parentElement.style.color = 'var(--starlight-mid)';
+  modeText.parentElement.style.color = 'var(--starlight-light)';
 }
 
 // Fetch submissions
@@ -136,13 +137,18 @@ async function fetchSubmissions() {
 // Render submissions list
 function renderSubmissions() {
   const query = (filterInput.value || '').trim().toLowerCase();
-  const filtered = submissionsCache.filter(item => {
+  let filtered = submissionsCache.filter(item => {
     return (
       (item.name || '').toLowerCase().includes(query) ||
       (item.regNo || '').toLowerCase().includes(query) ||
       (item.assignmentTitle || '').toLowerCase().includes(query)
     );
   });
+
+  const mode = filterModeSelect ? filterModeSelect.value : 'all';
+  if (mode === 'recent') {
+    filtered = filtered.slice(0, 5);
+  }
 
   submissionsCount.textContent = submissionsCache.length;
 
@@ -189,6 +195,13 @@ function escapeHtml(str) {
 [studentNameInput, regNoInput, titleInput, urlInput].forEach(el => {
   if (el) el.addEventListener('input', updateJsonPreview);
 });
+
+// Dropdown filter listener
+if (filterModeSelect) {
+  filterModeSelect.addEventListener('change', () => {
+    renderSubmissions();
+  });
+}
 
 // Handle Form Submit
 form.addEventListener('submit', async (e) => {
