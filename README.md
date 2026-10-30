@@ -85,9 +85,12 @@ flowchart TD
 
 Clone the repository and install dependencies:
 
+- **Repository URL:** `https://github.com/CoffeeTheBest/devops-lab-mid`
+- **GitHub Pages Deployed URL:** `https://coffeethebest.github.io/devops-lab-mid/`
+
 ```bash
-git clone <your-repository-url>
-cd <repo-folder>
+git clone https://github.com/CoffeeTheBest/devops-lab-mid.git
+cd devops-lab-mid
 npm install
 ```
 
