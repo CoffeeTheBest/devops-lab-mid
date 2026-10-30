@@ -1,0 +1,39 @@
+{
+  "name": "assignment-submission-portal",
+  "version": "1.0.0",
+  "description": "DevOps Lab Mid - Assignment Submission Portal with CI Pipeline, Local Report Receiver, and Deployment",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "jest --runInBand --json --outputFile=test-results.json",
+    "test:watch": "jest --watch",
+    "receiver": "node receiver/server.js",
+    "receiver:tunnel": "node receiver/start-tunnel.js",
+    "report:send": "node scripts/format-report.js",
+    "report:email": "node scripts/send-email.js"
+  },
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "github-actions",
+    "assignment-portal",
+    "jest"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "localtunnel": "^2.0.2",
+    "nodemailer": "^6.10.0",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true
+  }
+}

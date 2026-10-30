@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Temporary / intermediate test artifacts
+test-results.json
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db

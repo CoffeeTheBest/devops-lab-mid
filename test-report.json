@@ -1,0 +1,39 @@
+{
+  "repository": "local/assignment-submission-portal",
+  "branch": "main",
+  "commitSha": "local-dev-commit",
+  "pipelineRunId": "local-run-1793337786309",
+  "executionTimestamp": "2026-10-30T05:23:06.309Z",
+  "overallStatus": "PASSED",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "tests": [
+    {
+      "name": "Assignment Submission Portal Tests Complete details and a valid submission URL: The submission is saved and appears in the submission list",
+      "result": "passed",
+      "failureMessage": null,
+      "durationMs": 29
+    },
+    {
+      "name": "Assignment Submission Portal Tests Missing registration number: The submission is rejected with a validation message",
+      "result": "passed",
+      "failureMessage": null,
+      "durationMs": 4
+    },
+    {
+      "name": "Assignment Submission Portal Tests Invalid submission URL: The submission is rejected and is not saved",
+      "result": "passed",
+      "failureMessage": null,
+      "durationMs": 3
+    },
+    {
+      "name": "Assignment Submission Portal Tests Missing student name or assignment title is rejected",
+      "result": "passed",
+      "failureMessage": null,
+      "durationMs": 1
+    }
+  ]
+}
