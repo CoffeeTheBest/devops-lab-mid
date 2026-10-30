@@ -1,5 +1,5 @@
 /**
- * Assignment Submission Portal - Retro-Terminal Brutalist Client Engine
+ * Assignment Submission Portal - Cosmic Terminal Client Engine
  * Supports Express Backend & Static LocalStorage for GitHub Pages.
  */
 
@@ -22,6 +22,7 @@ const submissionsList = document.getElementById('submissionsList');
 const submissionsCount = document.getElementById('submissionsCount');
 const formAlert = document.getElementById('formAlert');
 const modeText = document.getElementById('modeText');
+const jsonPreviewBox = document.getElementById('jsonPreviewBox');
 
 // Field errors
 const nameError = document.getElementById('nameError');
@@ -39,6 +40,26 @@ function isValidUrl(urlString) {
   }
 }
 
+// Update real-time JSON payload inspector
+function updateJsonPreview() {
+  if (!jsonPreviewBox) return;
+  const payload = {
+    endpoint: '/api/submissions',
+    method: 'POST',
+    payload: {
+      name: studentNameInput.value.trim() || null,
+      regNo: regNoInput.value.trim() || null,
+      assignmentTitle: titleInput.value.trim() || null,
+      submissionUrl: urlInput.value.trim() || null
+    },
+    meta: {
+      clientTimestamp: new Date().toISOString(),
+      registryBufferCount: submissionsCache.length
+    }
+  };
+  jsonPreviewBox.textContent = JSON.stringify(payload, null, 2);
+}
+
 // Clear validation errors
 function clearFieldErrors() {
   nameError.textContent = '';
@@ -51,11 +72,12 @@ function clearFieldErrors() {
   titleInput.classList.remove('is-invalid');
   urlInput.classList.remove('is-invalid');
   formAlert.style.display = 'none';
+  updateJsonPreview();
 }
 
 // Show alert banner
 function showAlert(message, type = 'success') {
-  formAlert.className = `terminal-alert alert-${type}`;
+  formAlert.className = `cockpit-alert-toast alert-${type}`;
   formAlert.innerHTML = `
     <span>${type === 'success' ? '[SYS.OK]' : '[SYS.ERR]'}</span>
     <span>${escapeHtml(message)}</span>
@@ -70,8 +92,8 @@ async function detectBackend() {
     if (res.ok) {
       isBackendLive = true;
       modeText.textContent = 'HOST: [LIVE_API]';
-      modeText.parentElement.style.borderColor = 'var(--phosphor-bright)';
-      modeText.parentElement.style.color = 'var(--phosphor-bright)';
+      modeText.parentElement.style.borderColor = 'var(--nebula-primary)';
+      modeText.parentElement.style.color = 'var(--nebula-bright)';
       return;
     }
   } catch {
@@ -79,8 +101,8 @@ async function detectBackend() {
   }
   isBackendLive = false;
   modeText.textContent = 'HOST: [STANDALONE]';
-  modeText.parentElement.style.borderColor = 'var(--phosphor-dim)';
-  modeText.parentElement.style.color = 'var(--phosphor-dim)';
+  modeText.parentElement.style.borderColor = 'var(--starlight-border-active)';
+  modeText.parentElement.style.color = 'var(--starlight-mid)';
 }
 
 // Fetch submissions
@@ -92,6 +114,7 @@ async function fetchSubmissions() {
         const data = await res.json();
         submissionsCache = data.submissions || [];
         renderSubmissions();
+        updateJsonPreview();
         return;
       }
     } catch (err) {
@@ -107,6 +130,7 @@ async function fetchSubmissions() {
     submissionsCache = [];
   }
   renderSubmissions();
+  updateJsonPreview();
 }
 
 // Render submissions list
@@ -124,9 +148,9 @@ function renderSubmissions() {
 
   if (filtered.length === 0) {
     submissionsList.innerHTML = `
-      <div class="stream-empty">
-        <span class="empty-prompt">&gt; NO_EVALUATION_RECORDS_FOUND</span>
-        <span>${submissionsCache.length === 0 ? '// Register buffer is currently empty. Execute submission to register.' : '// Query returned 0 matching records.'}</span>
+      <div class="audit-empty-view">
+        <span class="empty-lead-tag">&gt; NO_EVALUATION_RECORDS_FOUND</span>
+        <span>${submissionsCache.length === 0 ? '// Register buffer is currently empty. Dispatch payload to register.' : '// Query returned 0 matching records.'}</span>
       </div>
     `;
     return;
@@ -135,14 +159,14 @@ function renderSubmissions() {
   submissionsList.innerHTML = filtered.map(item => {
     const dateStr = item.submittedAt ? new Date(item.submittedAt).toISOString().replace('T', ' ').substring(0, 19) + ' UTC' : 'TIMESTAMP_PENDING';
     return `
-      <div class="stream-record">
-        <div class="record-meta-line">
-          <span class="record-reg-badge">${escapeHtml(item.regNo)}</span>
-          <span class="record-time">${dateStr}</span>
+      <div class="audit-item-box">
+        <div class="item-meta-strip">
+          <span class="item-reg-tag">${escapeHtml(item.regNo)}</span>
+          <span class="item-iso-time">${dateStr}</span>
         </div>
-        <div class="record-student-name">${escapeHtml(item.name)}</div>
-        <div class="record-assignment-title">&gt; ${escapeHtml(item.assignmentTitle)}</div>
-        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="record-repo-link">
+        <div class="item-student-name">${escapeHtml(item.name)}</div>
+        <div class="item-assignment-title">&gt; ${escapeHtml(item.assignmentTitle)}</div>
+        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="item-repo-anchor">
           <span>REPO: ${escapeHtml(item.submissionUrl)}</span>
           <span>[↗]</span>
         </a>
@@ -160,6 +184,11 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+// Real-time input listener for live JSON preview
+[studentNameInput, regNoInput, titleInput, urlInput].forEach(el => {
+  if (el) el.addEventListener('input', updateJsonPreview);
+});
 
 // Handle Form Submit
 form.addEventListener('submit', async (e) => {
@@ -250,6 +279,7 @@ form.addEventListener('submit', async (e) => {
     showAlert(`SYS_NETWORK_FAULT: ${err.message}`, 'error');
   } finally {
     submitBtn.disabled = false;
+    updateJsonPreview();
   }
 });
 
@@ -260,11 +290,13 @@ quickFillBtn.addEventListener('click', () => {
   titleInput.value = 'DevOps Lab Mid - CI/CD Automation';
   urlInput.value = 'https://github.com/CoffeeTheBest/devops-lab-mid';
   clearFieldErrors();
+  updateJsonPreview();
 });
 
 // Reset button
 resetBtn.addEventListener('click', () => {
   clearFieldErrors();
+  updateJsonPreview();
 });
 
 // Refresh button
@@ -281,4 +313,5 @@ filterInput.addEventListener('input', () => {
 (async function init() {
   await detectBackend();
   await fetchSubmissions();
+  updateJsonPreview();
 })();
