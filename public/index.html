@@ -3,879 +3,856 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assignment Submission Portal | DevOps Lab Mid</title>
-  <meta name="description" content="Automated assignment submission portal with CI/CD testing, local test report receiver, and conditional deployment.">
+  <title>CUI // DEVOPS TERMINAL - Assignment Portal</title>
+  <meta name="description" content="Retro-terminal brutalist assignment submission portal with CI/CD testing, local test report receiver, and conditional deployment.">
 
-  <!-- Multi-Font Typographic Hierarchy -->
+  <!-- Retro-Terminal & Pixel Monospace Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./style.css?v=3.0">
+  <link rel="stylesheet" href="./style.css?v=4.0">
 
   <style>
-    /* --------------------------------------------------------------------------
-       DESIGN SYSTEM & TYPOGRAPHIC TOKENS
-       Developer-grade minimalism, separate cards, ordered components.
-    -------------------------------------------------------------------------- */
+    /* ==========================================================================
+       RETRO-TERMINAL BRUTALIST DESIGN SYSTEM
+       Cyberpunk / Hacker Terminal / 8-bit Pixel / Monospace Brutalism
+       ========================================================================== */
+
     :root {
-      --surface-canvas: #090b0e;
-      --surface-nav: #0d0f14;
-      --surface-panel-form: #11141a;
-      --surface-panel-registry: #131720;
-      --surface-console: #0c0e12;
-      --surface-cell: #101319;
-      --surface-input: #0a0c10;
-      --surface-item: #11151d;
-      --surface-item-hover: #161b24;
+      /* Terminal Phosphor Palette */
+      --crt-bg: #050805;
+      --crt-bg-panel: #080d09;
+      --crt-bg-subtle: #0d140e;
+      --crt-bg-input: #040604;
+      
+      --phosphor-bright: #00ff66;
+      --phosphor-primary: #39ff14;
+      --phosphor-glow: rgba(0, 255, 102, 0.4);
+      --phosphor-dim: #1e833f;
+      --phosphor-dark: #0f3d1e;
+      --phosphor-muted: #14532d;
+      --phosphor-faint: #07210e;
 
-      --border-subtle: #1e232e;
-      --border-medium: #2a3140;
-      --border-strong: #3b4559;
-      --border-focus: #e2e8f0;
+      --amber-alert: #ffb000;
+      --amber-dim: #785200;
+      --red-alert: #ff3333;
+      --red-dim: #7f1d1d;
 
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #525e75;
-      --text-dim: #384254;
+      /* Terminal Monospace Fonts */
+      --font-pixel: 'Silkscreen', monospace;
+      --font-crt: 'VT323', monospace;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-hud: 'Share Tech Mono', monospace;
 
-      --accent-emerald: #10b981;
-      --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
-      --accent-emerald-border: rgba(16, 185, 129, 0.35);
-
-      --accent-amber: #f59e0b;
-      --accent-amber-subtle: rgba(245, 158, 11, 0.12);
-      --accent-amber-border: rgba(245, 158, 11, 0.35);
-
-      --accent-rose: #f43f5e;
-      --accent-rose-subtle: rgba(244, 63, 94, 0.12);
-      --accent-rose-border: rgba(244, 63, 94, 0.35);
-
-      --font-heading: 'Space Grotesk', -apple-system, sans-serif;
-      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono-tech: 'JetBrains Mono', monospace;
-      --font-mono-ledger: 'Space Mono', monospace;
+      /* Brutalist Geometry (Zero Radius) */
+      --border-thin: 1px solid var(--phosphor-dark);
+      --border-medium: 1px solid var(--phosphor-dim);
+      --border-bright: 1px solid var(--phosphor-bright);
     }
 
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      border-radius: 0 !important; /* Strict brutalist geometry */
     }
 
+    /* Scanline & CRT flicker overlay */
     body {
-      background-color: var(--surface-canvas);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 14px;
+      background-color: var(--crt-bg);
+      color: var(--phosphor-primary);
+      font-family: var(--font-mono);
+      font-size: 13px;
       line-height: 1.5;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      background-image: 
+        linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
-    /* TOP NAVBAR */
-    .top-nav {
-      background-color: var(--surface-nav);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* CRT scanline simulation */
+    body::before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+      background-size: 100% 4px;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.85;
     }
 
-    .nav-container {
-      max-width: 1280px;
+    /* CRT subtle vignette */
+    body::after {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+      z-index: 998;
+      pointer-events: none;
+    }
+
+    /* Terminal Container */
+    .terminal-container {
+      max-width: 1300px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 20px 24px 60px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* --------------------------------------------------------------------------
+       TOP TERMINAL BANNER & HUD STATUS
+       -------------------------------------------------------------------------- */
+    .terminal-banner {
+      border: 1px solid var(--phosphor-dim);
+      background-color: var(--crt-bg-panel);
+      padding: 14px 18px;
+      margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.06);
     }
 
-    .brand-group {
+    .banner-brand {
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
-    .brand-badge {
-      font-family: var(--font-mono-tech);
-      font-size: 12px;
+    .pixel-logo {
+      font-family: var(--font-pixel);
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.05em;
-      background: #1a202c;
-      color: #e2e8f0;
-      border: 1px solid var(--border-medium);
+      background: var(--phosphor-primary);
+      color: #000;
       padding: 6px 10px;
-      border-radius: 4px;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--phosphor-bright);
     }
 
-    .brand-meta {
+    .banner-meta {
       display: flex;
       flex-direction: column;
     }
 
-    .univ-kicker {
-      font-family: var(--font-mono-tech);
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+    .terminal-kicker {
+      font-family: var(--font-pixel);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--phosphor-dim);
       text-transform: uppercase;
       margin-bottom: 2px;
     }
 
-    .portal-heading {
-      font-family: var(--font-heading);
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: var(--text-primary);
+    .terminal-title {
+      font-family: var(--font-crt);
+      font-size: 26px;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--phosphor-glow);
+      line-height: 1.1;
     }
 
-    .status-deck {
+    .hud-deck {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .telemetry-chip {
+    .hud-chip {
+      font-family: var(--font-hud);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--phosphor-dim);
+      background: var(--crt-bg);
+      color: var(--phosphor-primary);
+      padding: 5px 12px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 5px 12px;
-      border-radius: 4px;
-      font-family: var(--font-mono-tech);
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      font-weight: 500;
-      border: 1px solid var(--border-subtle);
-      background: var(--surface-canvas);
     }
 
-    .chip-ci {
-      border-color: var(--accent-emerald-border);
-      background: var(--accent-emerald-subtle);
-      color: #34d399;
-    }
-
-    .status-indicator-dot {
-      width: 6px;
-      height: 6px;
-      background-color: #34d399;
-      border-radius: 50%;
+    .hud-chip.chip-ci {
+      border-color: var(--phosphor-bright);
+      box-shadow: 0 0 8px rgba(0, 255, 102, 0.15);
     }
 
     .chip-mode {
-      border-color: var(--border-medium);
-      color: var(--text-secondary);
+      border-color: var(--phosphor-dim);
+      color: var(--phosphor-dim);
     }
 
-    .mode-bullet {
-      color: var(--accent-amber);
+    .pixel-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--phosphor-bright);
+      display: inline-block;
+      animation: pixelBlink 1.2s steps(2, start) infinite;
     }
 
-    /* PAGE WORKSPACE */
-    .page-body {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 32px 24px 64px;
+    @keyframes pixelBlink {
+      to { visibility: hidden; }
     }
 
-    .workspace-grid {
+    /* --------------------------------------------------------------------------
+       GRID WORKSPACE
+       -------------------------------------------------------------------------- */
+    .terminal-grid {
       display: grid;
       grid-template-columns: 1fr 1.35fr;
-      gap: 28px;
-      margin-bottom: 32px;
+      gap: 24px;
+      margin-bottom: 24px;
     }
 
     @media (max-width: 960px) {
-      .workspace-grid {
+      .terminal-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* SECTION CARDS */
-    .section-card {
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 24px 26px;
+    /* --------------------------------------------------------------------------
+       PANEL CARDS (BRUTALIST BOXES)
+       -------------------------------------------------------------------------- */
+    .terminal-card {
+      background-color: var(--crt-bg-panel);
+      border: 1px solid var(--phosphor-dim);
+      padding: 20px 22px;
+      position: relative;
     }
 
-    .panel-header {
+    .card-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--phosphor-dim);
       gap: 12px;
     }
 
-    .section-indexer {
+    .section-badge {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-family: var(--font-mono-tech);
     }
 
-    .index-num {
-      font-size: 13px;
-      font-weight: 700;
-      color: #94a3b8;
+    .badge-ascii {
+      font-family: var(--font-pixel);
+      font-size: 10px;
+      background: var(--phosphor-faint);
+      color: var(--phosphor-bright);
+      border: 1px solid var(--phosphor-dim);
+      padding: 3px 7px;
     }
 
-    .index-rule {
-      color: var(--text-dim);
-    }
-
-    .index-tag {
-      font-size: 11px;
-      font-weight: 600;
+    .badge-name {
+      font-family: var(--font-pixel);
+      font-size: 10px;
+      color: #ffffff;
       letter-spacing: 0.08em;
-      color: var(--text-primary);
-      text-transform: uppercase;
     }
 
-    /* SECTION 01: FORM PANEL */
-    .form-panel {
-      background-color: var(--surface-panel-form);
+    /* --------------------------------------------------------------------------
+       SECTION 01: SUBMISSION FORM (TERMINAL INPUT)
+       -------------------------------------------------------------------------- */
+    .form-cmd-lead {
+      font-family: var(--font-hud);
+      font-size: 11.5px;
+      color: var(--phosphor-dim);
+      margin-bottom: 20px;
+      padding: 6px 10px;
+      background: rgba(0, 255, 102, 0.03);
+      border-left: 2px solid var(--phosphor-dim);
     }
 
-    .panel-lead {
-      margin-bottom: 22px;
-    }
-
-    .panel-description {
-      font-family: var(--font-ui);
-      font-size: 12.5px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .btn-utility {
-      background: transparent;
-      border: 1px solid var(--border-medium);
-      color: #94a3b8;
-      font-family: var(--font-mono-tech);
-      font-size: 10.5px;
-      letter-spacing: 0.04em;
-      padding: 5px 9px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-utility:hover {
-      background: #1a202c;
-      color: #f1f5f9;
-      border-color: var(--border-strong);
-    }
-
-    .util-bracket {
-      color: var(--text-dim);
-    }
-
-    .submission-form {
+    .form-layout {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .field-row {
+    .input-unit {
       display: flex;
       flex-direction: column;
     }
 
-    .field-meta {
+    .input-label-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
+      font-family: var(--font-hud);
     }
 
-    .field-label {
-      font-family: var(--font-ui);
+    .label-tag {
       font-size: 12px;
-      font-weight: 600;
-      color: #cbd5e1;
+      color: #ffffff;
+      font-weight: 500;
+      letter-spacing: 0.04em;
     }
 
-    .field-code {
-      font-family: var(--font-mono-tech);
+    .label-spec {
       font-size: 10px;
-      color: var(--text-muted);
+      color: var(--phosphor-dim);
     }
 
-    .field-box {
-      position: relative;
-    }
-
-    .text-input {
+    .terminal-input {
       width: 100%;
-      background-color: var(--surface-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
+      background-color: var(--crt-bg-input);
+      border: 1px solid var(--phosphor-dark);
       padding: 10px 12px;
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 13px;
-      transition: border-color 0.15s ease;
-    }
-
-    .text-input.font-mono {
-      font-family: var(--font-mono-tech);
+      font-family: var(--font-mono);
       font-size: 12.5px;
-    }
-
-    .text-input::placeholder {
-      color: var(--text-dim);
-    }
-
-    .text-input:focus {
+      color: var(--phosphor-bright);
       outline: none;
-      border-color: var(--border-focus);
-      background-color: #0d1016;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .text-input.is-invalid {
-      border-color: var(--accent-rose);
-      background-color: rgba(244, 63, 94, 0.04);
+    .terminal-input::placeholder {
+      color: #174223;
     }
 
-    .field-error-msg {
-      font-family: var(--font-mono-tech);
+    .terminal-input:focus {
+      border-color: var(--phosphor-bright);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+      background-color: #060a07;
+    }
+
+    .terminal-input.is-invalid {
+      border-color: var(--red-alert);
+      background-color: rgba(255, 51, 51, 0.05);
+      color: #ff8888;
+    }
+
+    .error-console-msg {
+      font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--accent-rose);
+      color: var(--red-alert);
       margin-top: 4px;
       min-height: 14px;
     }
 
-    .system-alert-banner {
+    /* Terminal Alert Message */
+    .terminal-alert {
       padding: 10px 14px;
-      border-radius: 4px;
-      font-family: var(--font-mono-tech);
-      font-size: 11.5px;
+      font-family: var(--font-hud);
+      font-size: 12px;
+      border: 1px solid var(--phosphor-bright);
+      background: rgba(0, 255, 102, 0.08);
+      color: var(--phosphor-bright);
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .alert-success {
-      background: var(--accent-emerald-subtle);
-      border: 1px solid var(--accent-emerald-border);
-      color: #34d399;
+      border-color: var(--phosphor-bright);
+      background: rgba(0, 255, 102, 0.1);
+      color: var(--phosphor-bright);
     }
 
     .alert-error {
-      background: var(--accent-rose-subtle);
-      border: 1px solid var(--accent-rose-border);
-      color: #fb7185;
+      border-color: var(--red-alert);
+      background: rgba(255, 51, 51, 0.1);
+      color: #ff7777;
     }
 
-    .form-footer-actions {
+    /* Buttons */
+    .form-btn-row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-top: 10px;
     }
 
-    .btn-dispatch {
+    .btn-brutal-primary {
       flex: 1;
-      background-color: #f1f5f9;
-      color: #090b0e;
-      border: 1px solid #f1f5f9;
-      border-radius: 4px;
-      padding: 11px 18px;
-      font-family: var(--font-heading);
-      font-size: 13px;
+      background: var(--phosphor-primary);
+      color: #000000;
+      font-family: var(--font-pixel);
+      font-size: 10px;
       font-weight: 700;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--phosphor-bright);
+      padding: 13px 18px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
+      text-transform: uppercase;
     }
 
-    .btn-dispatch:hover {
-      background-color: #ffffff;
-      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+    .btn-brutal-primary:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     }
 
-    .btn-dispatch:active {
+    .btn-brutal-primary:active {
       transform: translateY(1px);
     }
 
-    .btn-dispatch:disabled {
-      opacity: 0.5;
+    .btn-brutal-primary:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
-    .btn-indicator-arrow {
-      font-size: 15px;
-      line-height: 1;
+    .btn-brutal-subtle {
+      background: transparent;
+      color: var(--phosphor-dim);
+      font-family: var(--font-hud);
+      font-size: 12px;
+      border: 1px solid var(--phosphor-dark);
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: all 0.12s ease;
     }
 
-    .btn-subtle {
+    .btn-brutal-subtle:hover {
+      background: var(--phosphor-faint);
+      color: var(--phosphor-primary);
+      border-color: var(--phosphor-dim);
+    }
+
+    .btn-brutal-prefill {
       background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 11px 16px;
-      font-family: var(--font-mono-tech);
-      font-size: 12px;
+      color: var(--phosphor-primary);
+      font-family: var(--font-hud);
+      font-size: 11px;
+      border: 1px solid var(--phosphor-dim);
+      padding: 4px 10px;
       cursor: pointer;
       transition: all 0.15s ease;
     }
 
-    .btn-subtle:hover {
-      background: var(--surface-cell);
-      color: var(--text-primary);
-      border-color: var(--border-medium);
+    .btn-brutal-prefill:hover {
+      background: var(--phosphor-bright);
+      color: #000000;
+      border-color: var(--phosphor-bright);
     }
 
-    /* SECTION 02: REGISTRY PANEL */
-    .registry-panel {
-      background-color: var(--surface-panel-registry);
-    }
-
-    .registry-controls {
+    /* --------------------------------------------------------------------------
+       SECTION 02: REGISTRY PANEL (DATA AUDIT LOG)
+       -------------------------------------------------------------------------- */
+    .registry-top-tools {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .registry-counter {
-      font-family: var(--font-mono-ledger);
-      font-size: 10.5px;
-      color: #94a3b8;
-      background: #0f131a;
-      border: 1px solid var(--border-subtle);
+    .records-counter {
+      font-family: var(--font-pixel);
+      font-size: 9px;
+      color: var(--phosphor-bright);
+      background: var(--phosphor-faint);
+      border: 1px solid var(--phosphor-dim);
       padding: 4px 8px;
-      border-radius: 3px;
     }
 
-    .count-digit {
-      font-weight: 700;
-      color: #38bdf8;
-    }
-
-    .btn-icon-minimal {
+    .btn-sync-icon {
       background: transparent;
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      border-radius: 3px;
+      border: 1px solid var(--phosphor-dim);
+      color: var(--phosphor-primary);
       padding: 4px 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      transition: all 0.15s ease;
     }
 
-    .btn-icon-minimal:hover {
-      background: #1a202c;
-      color: var(--text-primary);
-      border-color: var(--border-medium);
+    .btn-sync-icon:hover {
+      background: var(--phosphor-faint);
+      border-color: var(--phosphor-bright);
     }
 
-    .query-bar {
+    /* Query console search box */
+    .terminal-query-box {
       display: flex;
       align-items: center;
-      background: #0b0e14;
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 8px 12px;
-      margin-bottom: 18px;
+      background: var(--crt-bg-input);
+      border: 1px solid var(--phosphor-dark);
+      padding: 7px 12px;
+      margin-bottom: 16px;
       gap: 10px;
     }
 
-    .query-prompt {
-      font-family: var(--font-mono-tech);
-      font-size: 13px;
-      color: var(--accent-emerald);
-      font-weight: 700;
+    .query-tag {
+      font-family: var(--font-pixel);
+      font-size: 9px;
+      color: var(--phosphor-dim);
     }
 
-    .query-input {
+    .query-field {
       width: 100%;
       background: transparent;
       border: none;
-      color: var(--text-primary);
-      font-family: var(--font-mono-ledger);
+      font-family: var(--font-mono);
       font-size: 12px;
-    }
-
-    .query-input:focus {
+      color: var(--phosphor-bright);
       outline: none;
     }
 
-    .query-input::placeholder {
-      color: var(--text-dim);
+    .query-field::placeholder {
+      color: #174223;
     }
 
-    .registry-ledger {
+    /* Registry Ledger Items */
+    .registry-stream {
       display: flex;
       flex-direction: column;
       gap: 10px;
       max-height: 480px;
       overflow-y: auto;
-      padding-right: 2px;
+      padding-right: 4px;
     }
 
-    .registry-ledger::-webkit-scrollbar {
+    .registry-stream::-webkit-scrollbar {
       width: 4px;
     }
 
-    .registry-ledger::-webkit-scrollbar-thumb {
-      background: var(--border-medium);
-      border-radius: 2px;
+    .registry-stream::-webkit-scrollbar-thumb {
+      background: var(--phosphor-dim);
     }
 
-    .ledger-entry {
-      background-color: var(--surface-item);
-      border: 1px solid var(--border-subtle);
-      border-left: 3px solid #3b82f6;
-      border-radius: 4px;
-      padding: 14px 16px;
-      transition: all 0.15s ease;
+    .stream-record {
+      background: #090e0a;
+      border: 1px solid var(--phosphor-dark);
+      border-left: 3px solid var(--phosphor-primary);
+      padding: 12px 14px;
+      transition: all 0.12s ease;
     }
 
-    .ledger-entry:hover {
-      background-color: var(--surface-item-hover);
-      border-color: var(--border-medium);
-      border-left-color: #60a5fa;
+    .stream-record:hover {
+      background: #0d160f;
+      border-color: var(--phosphor-dim);
+      border-left-color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.1);
     }
 
-    .ledger-header {
+    .record-meta-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .ledger-reg-badge {
-      font-family: var(--font-mono-ledger);
+      margin-bottom: 6px;
+      font-family: var(--font-hud);
       font-size: 11px;
+    }
+
+    .record-reg-badge {
+      font-family: var(--font-pixel);
+      font-size: 9px;
+      color: #000000;
+      background: var(--phosphor-bright);
+      padding: 2px 6px;
       font-weight: 700;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      padding: 2px 7px;
-      border-radius: 3px;
     }
 
-    .ledger-timestamp {
-      font-family: var(--font-mono-tech);
+    .record-time {
+      color: var(--phosphor-dim);
       font-size: 10.5px;
-      color: var(--text-muted);
     }
 
-    .ledger-student {
-      font-family: var(--font-heading);
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 3px;
+    .record-student-name {
+      font-family: var(--font-crt);
+      font-size: 20px;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 2px;
     }
 
-    .ledger-title {
-      font-family: var(--font-ui);
-      font-size: 12.5px;
-      color: var(--text-secondary);
+    .record-assignment-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #86efac;
       margin-bottom: 10px;
     }
 
-    .ledger-link {
+    .record-repo-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-family: var(--font-mono-ledger);
-      font-size: 11.5px;
-      color: #93c5fd;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--phosphor-bright);
       text-decoration: none;
-      background: rgba(30, 58, 138, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 4px 9px;
-      border-radius: 3px;
+      background: rgba(0, 255, 102, 0.06);
+      border: 1px solid var(--phosphor-dim);
+      padding: 4px 8px;
       word-break: break-all;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
     }
 
-    .ledger-link:hover {
-      background: rgba(30, 58, 138, 0.4);
-      color: #ffffff;
-      border-color: rgba(96, 165, 250, 0.6);
+    .record-repo-link:hover {
+      background: var(--phosphor-bright);
+      color: #000000;
+      border-color: var(--phosphor-bright);
     }
 
-    .link-arrow {
-      font-size: 11px;
-      color: #60a5fa;
-    }
-
-    .ledger-empty {
-      padding: 44px 16px;
+    /* Empty Registry State */
+    .stream-empty {
+      padding: 40px 16px;
       text-align: center;
-      font-family: var(--font-mono-tech);
-      font-size: 12px;
-      color: var(--text-muted);
-      border: 1px dashed var(--border-subtle);
-      border-radius: 4px;
+      font-family: var(--font-hud);
+      color: var(--phosphor-dim);
+      border: 1px dashed var(--phosphor-dark);
     }
 
-    .empty-diag {
+    .empty-prompt {
+      font-family: var(--font-pixel);
+      font-size: 10px;
+      color: var(--phosphor-primary);
       display: block;
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 6px;
+      margin-bottom: 6px;
     }
 
-    /* SECTION 03: TELEMETRY CONSOLE */
-    .telemetry-console {
-      background-color: var(--surface-console);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 20px 24px;
+    /* --------------------------------------------------------------------------
+       SECTION 03: DEVOPS TELEMETRY CONSOLE
+       -------------------------------------------------------------------------- */
+    .telemetry-rack {
+      border: 1px solid var(--phosphor-dim);
+      background-color: var(--crt-bg-panel);
+      padding: 16px 20px;
     }
 
-    .telemetry-bar-title {
+    .rack-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-subtle);
-      font-family: var(--font-mono-tech);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--phosphor-dim);
+      font-family: var(--font-pixel);
+      font-size: 9.5px;
     }
 
-    .console-label {
-      font-size: 11px;
-      font-weight: 600;
+    .rack-title {
+      color: var(--phosphor-bright);
       letter-spacing: 0.08em;
-      color: var(--text-muted);
     }
 
-    .console-branch {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.05em;
+    .rack-meta {
+      color: var(--phosphor-dim);
     }
 
-    .telemetry-grid {
+    .rack-trio {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
     @media (max-width: 860px) {
-      .telemetry-grid {
+      .rack-trio {
         grid-template-columns: 1fr;
       }
     }
 
-    .telemetry-cell {
-      background-color: var(--surface-cell);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 14px 16px;
+    .rack-cell {
+      background-color: #070c08;
+      border: 1px solid var(--phosphor-dark);
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
     }
 
-    .cell-head {
+    .cell-id-row {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
     }
 
-    .cell-tag {
-      font-family: var(--font-mono-tech);
-      font-size: 10px;
+    .cell-code {
+      font-family: var(--font-pixel);
+      font-size: 8.5px;
+      background: var(--phosphor-faint);
+      color: var(--phosphor-bright);
+      border: 1px solid var(--phosphor-dim);
+      padding: 1px 4px;
+    }
+
+    .cell-label {
+      font-family: var(--font-hud);
+      font-size: 12px;
       font-weight: 700;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
-      padding: 1px 5px;
-      border-radius: 2px;
+      color: #ffffff;
+      letter-spacing: 0.04em;
     }
 
-    .cell-title {
-      font-family: var(--font-heading);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .cell-desc {
-      font-family: var(--font-ui);
-      font-size: 11.5px;
-      color: var(--text-secondary);
+    .cell-body {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #86efac;
       line-height: 1.45;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-grow: 1;
     }
 
-    .cell-stat {
-      font-family: var(--font-mono-tech);
+    .cell-telemetry-foot {
+      font-family: var(--font-hud);
       font-size: 10.5px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 8px;
+      color: var(--phosphor-dim);
+      border-top: 1px dashed var(--phosphor-dark);
+      padding-top: 6px;
     }
 
-    .cell-stat code {
-      color: #93c5fd;
+    .cell-telemetry-foot code {
+      color: var(--phosphor-bright);
       font-family: inherit;
     }
   </style>
 </head>
 <body>
-  <!-- Top Navigation Bar -->
-  <nav class="top-nav">
-    <div class="nav-container">
-      <div class="brand-group">
-        <div class="brand-badge">CSC418</div>
-        <div class="brand-meta">
-          <span class="univ-kicker">COMSATS UNIVERSITY ISLAMABAD &bull; ATTOCK CAMPUS</span>
-          <h1 class="portal-heading">DevOps Assignment Submission Portal</h1>
+  <div class="terminal-container">
+
+    <!-- TOP HEADER / HUD -->
+    <header class="terminal-banner">
+      <div class="banner-brand">
+        <div class="pixel-logo">CUI//418</div>
+        <div class="banner-meta">
+          <span class="terminal-kicker">COMSATS UNIVERSITY ISLAMABAD &bull; ATTOCK CAMPUS</span>
+          <h1 class="terminal-title">DEVOPS ASSIGNMENT TERMINAL // LAB_MID</h1>
         </div>
       </div>
 
-      <div class="status-deck">
-        <div class="telemetry-chip chip-ci" id="ciStatusBadge">
-          <span class="status-indicator-dot"></span>
-          <span class="chip-label">CI RUNNER: ACTIVE</span>
+      <div class="hud-deck">
+        <div class="hud-chip chip-ci" id="ciStatusBadge">
+          <span class="pixel-dot"></span>
+          <span>CI_PIPELINE: ACTIVE</span>
         </div>
-        <div class="telemetry-chip chip-mode" id="appModeBadge">
-          <span class="mode-bullet">&bull;</span>
-          <span class="chip-label" id="modeText">CHECKING RUNTIME</span>
+        <div class="hud-chip chip-mode" id="appModeBadge">
+          <span>&gt;</span>
+          <span id="modeText">HOST: CHECKING</span>
         </div>
       </div>
-    </div>
-  </nav>
+    </header>
 
-  <!-- Main Content Workspace -->
-  <main class="page-body">
-    <div class="workspace-grid">
+    <!-- MAIN TWO-COLUMN TERMINAL WORKSPACE -->
+    <div class="terminal-grid">
 
       <!-- SECTION 01: FORM DISPATCH CARD -->
-      <section class="section-card form-panel">
-        <div class="panel-header">
-          <div class="section-indexer">
-            <span class="index-num">01</span>
-            <span class="index-rule">/</span>
-            <span class="index-tag">SUBMISSION FORM</span>
+      <section class="terminal-card">
+        <div class="card-top-bar">
+          <div class="section-badge">
+            <span class="badge-ascii">[01]</span>
+            <span class="badge-name">PAYLOAD_DISPATCH_UNIT</span>
           </div>
-          <button type="button" class="btn-utility" id="quickFillBtn" title="Fill sample data for demo evaluation">
-            <span class="util-bracket">[</span> PREFILL DEMO DATA <span class="util-bracket">]</span>
+          <button type="button" class="btn-brutal-prefill" id="quickFillBtn" title="Fill sample data for demonstration">
+            &gt; ./load_sample_data.sh
           </button>
         </div>
 
-        <div class="panel-lead">
-          <p class="panel-description">Complete all required fields below to lodge your repository or project link into the evaluation register.</p>
+        <div class="form-cmd-lead">
+          $ exec --validate-payload --target=evaluator_register
         </div>
 
-        <form id="submissionForm" class="submission-form" novalidate>
-          <div class="field-row">
-            <div class="field-meta">
-              <label for="studentName" class="field-label">Student Full Name</label>
-              <span class="field-code">#01_NAME</span>
+        <form id="submissionForm" class="form-layout" novalidate>
+          <div class="input-unit">
+            <div class="input-label-row">
+              <label for="studentName" class="label-tag">STUDENT_FULL_NAME</label>
+              <span class="label-spec">[STR / REQUIRED]</span>
             </div>
-            <div class="field-box">
-              <input 
-                type="text" 
-                id="studentName" 
-                name="name" 
-                class="text-input" 
-                placeholder="e.g. Muhammad Huzaifa"
-                autocomplete="name"
-                required
-              >
-            </div>
-            <div class="field-error-msg" id="nameError"></div>
+            <input 
+              type="text" 
+              id="studentName" 
+              name="name" 
+              class="terminal-input" 
+              placeholder="e.g. Muhammad Huzaifa"
+              autocomplete="name"
+              required
+            >
+            <div class="error-console-msg" id="nameError"></div>
           </div>
 
-          <div class="field-row">
-            <div class="field-meta">
-              <label for="regNo" class="field-label">Registration Number</label>
-              <span class="field-code">#02_REG_ID</span>
+          <div class="input-unit">
+            <div class="input-label-row">
+              <label for="regNo" class="label-tag">REGISTRATION_NUMBER</label>
+              <span class="label-spec">[ID / UNIQUE]</span>
             </div>
-            <div class="field-box">
-              <input 
-                type="text" 
-                id="regNo" 
-                name="regNo" 
-                class="text-input font-mono" 
-                placeholder="e.g. SP21-BCS-042"
-                required
-              >
-            </div>
-            <div class="field-error-msg" id="regNoError"></div>
+            <input 
+              type="text" 
+              id="regNo" 
+              name="regNo" 
+              class="terminal-input" 
+              placeholder="e.g. SP21-BCS-042"
+              required
+            >
+            <div class="error-console-msg" id="regNoError"></div>
           </div>
 
-          <div class="field-row">
-            <div class="field-meta">
-              <label for="assignmentTitle" class="field-label">Assignment Title</label>
-              <span class="field-code">#03_TITLE</span>
+          <div class="input-unit">
+            <div class="input-label-row">
+              <label for="assignmentTitle" class="label-tag">ASSIGNMENT_TITLE</label>
+              <span class="label-spec">[STR / LAB_ID]</span>
             </div>
-            <div class="field-box">
-              <input 
-                type="text" 
-                id="assignmentTitle" 
-                name="assignmentTitle" 
-                class="text-input" 
-                placeholder="e.g. DevOps Lab Mid - CI/CD Pipeline"
-                required
-              >
-            </div>
-            <div class="field-error-msg" id="titleError"></div>
+            <input 
+              type="text" 
+              id="assignmentTitle" 
+              name="assignmentTitle" 
+              class="terminal-input" 
+              placeholder="e.g. DevOps Lab Mid - CI/CD Automation"
+              required
+            >
+            <div class="error-console-msg" id="titleError"></div>
           </div>
 
-          <div class="field-row">
-            <div class="field-meta">
-              <label for="submissionUrl" class="field-label">Submission Link</label>
-              <span class="field-code">#04_REPO_URL</span>
+          <div class="input-unit">
+            <div class="input-label-row">
+              <label for="submissionUrl" class="label-tag">REPOSITORY_URL</label>
+              <span class="label-spec">[URI / HTTP_HTTPS]</span>
             </div>
-            <div class="field-box">
-              <input 
-                type="url" 
-                id="submissionUrl" 
-                name="submissionUrl" 
-                class="text-input font-mono" 
-                placeholder="https://github.com/organization/repository"
-                required
-              >
-            </div>
-            <div class="field-error-msg" id="urlError"></div>
+            <input 
+              type="url" 
+              id="submissionUrl" 
+              name="submissionUrl" 
+              class="terminal-input" 
+              placeholder="https://github.com/organization/repo"
+              required
+            >
+            <div class="error-console-msg" id="urlError"></div>
           </div>
 
-          <!-- Alert Banner -->
-          <div class="system-alert-banner" id="formAlert" style="display: none;"></div>
+          <!-- Alert banner -->
+          <div class="terminal-alert" id="formAlert" style="display: none;"></div>
 
-          <div class="form-footer-actions">
-            <button type="submit" class="btn-dispatch" id="submitBtn">
-              <span class="btn-text">Submit Assignment</span>
-              <span class="btn-indicator-arrow">&rarr;</span>
+          <div class="form-btn-row">
+            <button type="submit" class="btn-brutal-primary" id="submitBtn">
+              <span>[ EXECUTE SUBMISSION &gt;&gt; ]</span>
             </button>
-            <button type="reset" class="btn-subtle" id="resetBtn">Reset</button>
+            <button type="reset" class="btn-brutal-subtle" id="resetBtn">
+              $ clear
+            </button>
           </div>
         </form>
       </section>
 
-      <!-- SECTION 02: VERIFIED SUBMISSIONS REGISTRY -->
-      <section class="section-card registry-panel">
-        <div class="panel-header">
-          <div class="section-indexer">
-            <span class="index-num">02</span>
-            <span class="index-rule">/</span>
-            <span class="index-tag">SUBMISSIONS REGISTRY</span>
+      <!-- SECTION 02: VERIFIED AUDIT LOG / REGISTRY -->
+      <section class="terminal-card">
+        <div class="card-top-bar">
+          <div class="section-badge">
+            <span class="badge-ascii">[02]</span>
+            <span class="badge-name">EVALUATION_AUDIT_LOG</span>
           </div>
-          <div class="registry-controls">
-            <span class="registry-counter" id="submissionsCountBadge">
-              <span class="count-digit" id="submissionsCount">0</span> RECORDS
+          <div class="registry-top-tools">
+            <span class="records-counter" id="submissionsCountBadge">
+              <span id="submissionsCount">0</span> RECORDS
             </span>
-            <button type="button" class="btn-icon-minimal" id="refreshBtn" title="Sync with store">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button type="button" class="btn-sync-icon" id="refreshBtn" title="Sync with store">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -884,62 +861,63 @@
           </div>
         </div>
 
-        <!-- Filter bar styled as a search query console -->
-        <div class="query-bar">
-          <span class="query-prompt">&gt;</span>
+        <!-- Terminal Query Filter -->
+        <div class="terminal-query-box">
+          <span class="query-tag">QUERY&gt;</span>
           <input 
             type="text" 
             id="filterInput" 
-            class="query-input font-mono" 
-            placeholder="Search records by student name, reg # or assignment..."
+            class="query-field" 
+            placeholder="grep records by student, reg # or title..."
           >
         </div>
 
-        <!-- Ledger container -->
-        <div class="registry-ledger" id="submissionsList">
+        <!-- Ledger stream container -->
+        <div class="registry-stream" id="submissionsList">
           <!-- Dynamically populated entries -->
         </div>
       </section>
     </div>
 
     <!-- SECTION 03: DEVOPS PIPELINE & TELEMETRY STRIP -->
-    <section class="telemetry-console">
-      <div class="telemetry-bar-title">
-        <span class="console-label">SYSTEM_SPECS // PIPELINE_AUTOMATION</span>
-        <span class="console-branch">BRANCH: MAIN</span>
+    <section class="telemetry-rack">
+      <div class="rack-header">
+        <span class="rack-title">// SYSTEM_TELEMETRY // CI_CD_AUTOMATION_SPEC</span>
+        <span class="rack-meta">BRANCH: MAIN &bull; STATUS: PASSING</span>
       </div>
 
-      <div class="telemetry-grid">
-        <div class="telemetry-cell">
-          <div class="cell-head">
-            <span class="cell-tag">SYS.01</span>
-            <span class="cell-title">Continuous Integration</span>
+      <div class="rack-trio">
+        <div class="rack-cell">
+          <div class="cell-id-row">
+            <span class="cell-code">SYS.01</span>
+            <span class="cell-label">AUTOMATED CI RUNNER</span>
           </div>
-          <p class="cell-desc">Triggers automated test runner on every push. Fails job upon any assertion failure.</p>
-          <div class="cell-stat">runner: <code>ubuntu-latest</code> &bull; test-suite: <code>jest</code></div>
+          <p class="cell-body">Triggers on push to repository. Executes Jest test harness verifying submission validation and persistence.</p>
+          <div class="cell-telemetry-foot">RUNNER: <code>ubuntu-latest</code> &bull; HARNESS: <code>jest</code></div>
         </div>
 
-        <div class="telemetry-cell">
-          <div class="cell-head">
-            <span class="cell-tag">SYS.02</span>
-            <span class="cell-title">Local Report Receiver</span>
+        <div class="rack-cell">
+          <div class="cell-id-row">
+            <span class="cell-code">SYS.02</span>
+            <span class="cell-label">LOCAL REPORT RECEIVER</span>
           </div>
-          <p class="cell-desc">Listens for test results on <code>POST /report</code> and writes payload to <code>test-report.json</code>.</p>
-          <div class="cell-stat">port: <code>5050</code> &bull; mode: <code>if: always()</code></div>
+          <p class="cell-body">Receives HTTP POST payloads from CI runner and synchronizes results directly to local <code>test-report.json</code>.</p>
+          <div class="cell-telemetry-foot">PORT: <code>5050</code> &bull; HOOK: <code>if: always()</code></div>
         </div>
 
-        <div class="telemetry-cell">
-          <div class="cell-head">
-            <span class="cell-tag">SYS.03</span>
-            <span class="cell-title">Conditional Deployment</span>
+        <div class="rack-cell">
+          <div class="cell-id-row">
+            <span class="cell-code">SYS.03</span>
+            <span class="cell-label">CONDITIONAL DEPLOY</span>
           </div>
-          <p class="cell-desc">Publishes static frontend to GitHub Pages strictly when all tests for the commit pass.</p>
-          <div class="cell-stat">target: <code>gh-pages</code> &bull; guard: <code>needs: test</code></div>
+          <p class="cell-body">Deploys static portal to GitHub Pages on push to <code>main</code> strictly when all tests for that commit pass.</p>
+          <div class="cell-telemetry-foot">TARGET: <code>gh-pages</code> &bull; GUARD: <code>needs: test</code></div>
         </div>
       </div>
     </section>
-  </main>
 
-  <script src="./app.js?v=3.0"></script>
+  </div>
+
+  <script src="./app.js?v=4.0"></script>
 </body>
 </html>

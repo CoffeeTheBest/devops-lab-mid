@@ -1,6 +1,6 @@
 /**
- * Assignment Submission Portal - Client Logic
- * Works seamlessly with Express Backend or fallback LocalStorage (for GitHub Pages demo).
+ * Assignment Submission Portal - Retro-Terminal Brutalist Client Engine
+ * Supports Express Backend & Static LocalStorage for GitHub Pages.
  */
 
 const API_BASE = '/api/submissions';
@@ -55,9 +55,9 @@ function clearFieldErrors() {
 
 // Show alert banner
 function showAlert(message, type = 'success') {
-  formAlert.className = `system-alert-banner alert-${type}`;
+  formAlert.className = `terminal-alert alert-${type}`;
   formAlert.innerHTML = `
-    <span>${type === 'success' ? '[STATUS: OK]' : '[ERROR]'}</span>
+    <span>${type === 'success' ? '[SYS.OK]' : '[SYS.ERR]'}</span>
     <span>${escapeHtml(message)}</span>
   `;
   formAlert.style.display = 'flex';
@@ -69,18 +69,18 @@ async function detectBackend() {
     const res = await fetch('/health', { method: 'GET', headers: { 'Accept': 'application/json' } });
     if (res.ok) {
       isBackendLive = true;
-      modeText.textContent = 'BACKEND: LIVE API';
-      modeText.parentElement.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-      modeText.parentElement.style.color = '#34d399';
+      modeText.textContent = 'HOST: [LIVE_API]';
+      modeText.parentElement.style.borderColor = 'var(--phosphor-bright)';
+      modeText.parentElement.style.color = 'var(--phosphor-bright)';
       return;
     }
   } catch {
     // Backend offline / GitHub Pages mode
   }
   isBackendLive = false;
-  modeText.textContent = 'GH-PAGES: STATIC REPO';
-  modeText.parentElement.style.borderColor = 'var(--border-medium)';
-  modeText.parentElement.style.color = '#94a3b8';
+  modeText.textContent = 'HOST: [STANDALONE]';
+  modeText.parentElement.style.borderColor = 'var(--phosphor-dim)';
+  modeText.parentElement.style.color = 'var(--phosphor-dim)';
 }
 
 // Fetch submissions
@@ -124,27 +124,27 @@ function renderSubmissions() {
 
   if (filtered.length === 0) {
     submissionsList.innerHTML = `
-      <div class="ledger-empty">
-        <span class="empty-msg">&gt; NO SUBMISSION RECORDS FOUND</span>
-        <span class="empty-diag">${submissionsCache.length === 0 ? 'The register is currently clear. Submit the form to add an entry.' : 'No entries match your search query.'}</span>
+      <div class="stream-empty">
+        <span class="empty-prompt">&gt; NO_EVALUATION_RECORDS_FOUND</span>
+        <span>${submissionsCache.length === 0 ? '// Register buffer is currently empty. Execute submission to register.' : '// Query returned 0 matching records.'}</span>
       </div>
     `;
     return;
   }
 
   submissionsList.innerHTML = filtered.map(item => {
-    const dateStr = item.submittedAt ? new Date(item.submittedAt).toLocaleString() : 'Just now';
+    const dateStr = item.submittedAt ? new Date(item.submittedAt).toISOString().replace('T', ' ').substring(0, 19) + ' UTC' : 'TIMESTAMP_PENDING';
     return `
-      <div class="ledger-entry">
-        <div class="ledger-header">
-          <span class="ledger-reg-badge">${escapeHtml(item.regNo)}</span>
-          <span class="ledger-timestamp">${dateStr}</span>
+      <div class="stream-record">
+        <div class="record-meta-line">
+          <span class="record-reg-badge">${escapeHtml(item.regNo)}</span>
+          <span class="record-time">${dateStr}</span>
         </div>
-        <div class="ledger-student">${escapeHtml(item.name)}</div>
-        <div class="ledger-title">${escapeHtml(item.assignmentTitle)}</div>
-        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="ledger-link">
-          <span>${escapeHtml(item.submissionUrl)}</span>
-          <span class="link-arrow">&nearr;</span>
+        <div class="record-student-name">${escapeHtml(item.name)}</div>
+        <div class="record-assignment-title">&gt; ${escapeHtml(item.assignmentTitle)}</div>
+        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="record-repo-link">
+          <span>REPO: ${escapeHtml(item.submissionUrl)}</span>
+          <span>[↗]</span>
         </a>
       </div>
     `;
@@ -173,34 +173,34 @@ form.addEventListener('submit', async (e) => {
 
   let hasError = false;
 
-  // Client-side validation
+  // Terminal input validation
   if (!name) {
-    nameError.textContent = '> Student name is required.';
+    nameError.textContent = 'ERR_01: STUDENT_NAME_REQUIRED';
     studentNameInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!regNo) {
-    regNoError.textContent = '> Registration number is required.';
+    regNoError.textContent = 'ERR_02: REGISTRATION_NUMBER_REQUIRED';
     regNoInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!assignmentTitle) {
-    titleError.textContent = '> Assignment title is required.';
+    titleError.textContent = 'ERR_03: ASSIGNMENT_TITLE_REQUIRED';
     titleInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!submissionUrl) {
-    urlError.textContent = '> Submission link is required.';
+    urlError.textContent = 'ERR_04: REPOSITORY_URL_REQUIRED';
     urlInput.classList.add('is-invalid');
     hasError = true;
   } else if (!isValidUrl(submissionUrl)) {
-    urlError.textContent = '> Invalid protocol. Must begin with http:// or https://';
+    urlError.textContent = 'ERR_05: INVALID_URI_PROTOCOL [MUST_BE_HTTP_OR_HTTPS]';
     urlInput.classList.add('is-invalid');
     hasError = true;
   }
 
   if (hasError) {
-    showAlert('Resolve highlighted input errors before dispatching.', 'error');
+    showAlert('EXEC_ABORT: Resolve input validation errors highlighted above.', 'error');
     return;
   }
 
@@ -217,16 +217,16 @@ form.addEventListener('submit', async (e) => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        showAlert('Submission saved and verified in register.', 'success');
+        showAlert('PAYLOAD_COMMITTED: Submission written to registry store.', 'success');
         form.reset();
         await fetchSubmissions();
       } else {
-        showAlert(data.error || 'Failed to save submission.', 'error');
+        showAlert(data.error || 'EXEC_FAIL: Backend rejected payload.', 'error');
         if (data.error?.toLowerCase().includes('registration')) {
-          regNoError.textContent = `> ${data.error}`;
+          regNoError.textContent = `ERR: ${data.error}`;
           regNoInput.classList.add('is-invalid');
         } else if (data.error?.toLowerCase().includes('url')) {
-          urlError.textContent = `> ${data.error}`;
+          urlError.textContent = `ERR: ${data.error}`;
           urlInput.classList.add('is-invalid');
         }
       }
@@ -242,12 +242,12 @@ form.addEventListener('submit', async (e) => {
       };
       submissionsCache.unshift(newRecord);
       localStorage.setItem('portal_submissions', JSON.stringify(submissionsCache));
-      showAlert('Record saved to browser ledger (GitHub Pages Static Host).', 'success');
+      showAlert('PAYLOAD_COMMITTED: Record stored in local terminal buffer.', 'success');
       form.reset();
       renderSubmissions();
     }
   } catch (err) {
-    showAlert(`Network dispatch error: ${err.message}`, 'error');
+    showAlert(`SYS_NETWORK_FAULT: ${err.message}`, 'error');
   } finally {
     submitBtn.disabled = false;
   }
