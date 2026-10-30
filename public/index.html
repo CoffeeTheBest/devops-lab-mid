@@ -5,222 +5,224 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assignment Submission Portal | DevOps Lab Mid</title>
   <meta name="description" content="Automated assignment submission portal with CI/CD testing, local test report receiver, and conditional deployment.">
-  
-  <!-- Modern Typography -->
+
+  <!-- Multi-Font Typographic Hierarchy -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
-
-  <div class="container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-brand">
-        <div class="logo-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            <path d="M8 7h8"></path>
-            <path d="M8 11h6"></path>
-          </svg>
-        </div>
-        <div>
-          <span class="sub-heading">COMSATS University Islamabad &bull; DevOps for Cloud Computing</span>
-          <h1 class="main-title">Assignment Submission Portal</h1>
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="brand-badge">CSC418</div>
+        <div class="brand-meta">
+          <span class="univ-kicker">COMSATS UNIVERSITY ISLAMABAD &bull; ATTOCK CAMPUS</span>
+          <h1 class="portal-heading">DevOps Assignment Submission Portal</h1>
         </div>
       </div>
 
-      <div class="header-badges">
-        <div class="badge badge-ci" id="ciStatusBadge">
-          <span class="pulse-dot"></span>
-          <span>CI Automated Pipeline</span>
+      <div class="status-deck">
+        <div class="telemetry-chip chip-ci" id="ciStatusBadge">
+          <span class="status-indicator-dot"></span>
+          <span class="chip-label">CI RUNNER: ACTIVE</span>
         </div>
-        <div class="badge badge-mode" id="appModeBadge">
-          <span class="mode-icon">⚡</span>
-          <span id="modeText">Checking Server...</span>
+        <div class="telemetry-chip chip-mode" id="appModeBadge">
+          <span class="mode-bullet">&bull;</span>
+          <span class="chip-label" id="modeText">CHECKING RUNTIME</span>
         </div>
       </div>
-    </header>
+    </div>
+  </nav>
 
-    <!-- Main Grid -->
-    <div class="main-grid">
-      <!-- Submission Form Column -->
-      <section class="card form-card">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h2 class="card-title">New Submission</h2>
-            <p class="card-subtitle">Enter your academic details and repository or submission link.</p>
+  <!-- Main Content Workspace -->
+  <main class="page-body">
+    <div class="workspace-grid">
+
+      <!-- SECTION 01: FORM DISPATCH CARD -->
+      <section class="section-card form-panel">
+        <div class="panel-header">
+          <div class="section-indexer">
+            <span class="index-num">01</span>
+            <span class="index-rule">/</span>
+            <span class="index-tag">SUBMISSION FORM</span>
           </div>
-          <button type="button" class="btn btn-ghost btn-xs" id="quickFillBtn" title="Fill with sample data for demonstration">
-            ✨ Quick Fill Demo
+          <button type="button" class="btn-utility" id="quickFillBtn" title="Fill sample data for demo evaluation">
+            <span class="util-bracket">[</span> PREFILL DEMO DATA <span class="util-bracket">]</span>
           </button>
         </div>
 
-        <form id="submissionForm" novalidate>
-          <div class="form-group">
-            <label for="studentName" class="form-label">
-              <span>Student Full Name</span>
-              <span class="required-star">*</span>
-            </label>
-            <div class="input-wrapper">
-              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
+        <div class="panel-lead">
+          <p class="panel-description">Complete all required fields below to lodge your repository or project link into the evaluation register.</p>
+        </div>
+
+        <form id="submissionForm" class="submission-form" novalidate>
+          <div class="field-row">
+            <div class="field-meta">
+              <label for="studentName" class="field-label">Student Full Name</label>
+              <span class="field-code">#01_NAME</span>
+            </div>
+            <div class="field-box">
               <input 
                 type="text" 
                 id="studentName" 
                 name="name" 
-                class="form-control" 
+                class="text-input" 
                 placeholder="e.g. Muhammad Huzaifa"
+                autocomplete="name"
                 required
               >
             </div>
-            <div class="field-error" id="nameError"></div>
+            <div class="field-error-msg" id="nameError"></div>
           </div>
 
-          <div class="form-group">
-            <label for="regNo" class="form-label">
-              <span>Registration Number</span>
-              <span class="required-star">*</span>
-            </label>
-            <div class="input-wrapper">
-              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                <line x1="7" y1="8" x2="17" y2="8"></line>
-                <line x1="7" y1="12" x2="13" y2="12"></line>
-                <line x1="7" y1="16" x2="10" y2="16"></line>
-              </svg>
+          <div class="field-row">
+            <div class="field-meta">
+              <label for="regNo" class="field-label">Registration Number</label>
+              <span class="field-code">#02_REG_ID</span>
+            </div>
+            <div class="field-box">
               <input 
                 type="text" 
                 id="regNo" 
                 name="regNo" 
-                class="form-control" 
-                placeholder="e.g. SP21-BCS-001"
+                class="text-input font-mono" 
+                placeholder="e.g. SP21-BCS-042"
                 required
               >
             </div>
-            <div class="field-error" id="regNoError"></div>
+            <div class="field-error-msg" id="regNoError"></div>
           </div>
 
-          <div class="form-group">
-            <label for="assignmentTitle" class="form-label">
-              <span>Assignment Title</span>
-              <span class="required-star">*</span>
-            </label>
-            <div class="input-wrapper">
-              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
+          <div class="field-row">
+            <div class="field-meta">
+              <label for="assignmentTitle" class="field-label">Assignment Title</label>
+              <span class="field-code">#03_TITLE</span>
+            </div>
+            <div class="field-box">
               <input 
                 type="text" 
                 id="assignmentTitle" 
                 name="assignmentTitle" 
-                class="form-control" 
+                class="text-input" 
                 placeholder="e.g. DevOps Lab Mid - CI/CD Pipeline"
                 required
               >
             </div>
-            <div class="field-error" id="titleError"></div>
+            <div class="field-error-msg" id="titleError"></div>
           </div>
 
-          <div class="form-group">
-            <label for="submissionUrl" class="form-label">
-              <span>Submission URL</span>
-              <span class="required-star">*</span>
-            </label>
-            <div class="input-wrapper">
-              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-              </svg>
+          <div class="field-row">
+            <div class="field-meta">
+              <label for="submissionUrl" class="field-label">Submission Link</label>
+              <span class="field-code">#04_REPO_URL</span>
+            </div>
+            <div class="field-box">
               <input 
                 type="url" 
                 id="submissionUrl" 
                 name="submissionUrl" 
-                class="form-control" 
-                placeholder="https://github.com/your-username/your-repo"
+                class="text-input font-mono" 
+                placeholder="https://github.com/organization/repository"
                 required
               >
             </div>
-            <div class="field-error" id="urlError"></div>
+            <div class="field-error-msg" id="urlError"></div>
           </div>
 
-          <!-- Alert banner -->
-          <div class="alert-box" id="formAlert" style="display: none;"></div>
+          <!-- Alert Banner -->
+          <div class="system-alert-banner" id="formAlert" style="display: none;"></div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="submitBtn">
+          <div class="form-footer-actions">
+            <button type="submit" class="btn-dispatch" id="submitBtn">
               <span class="btn-text">Submit Assignment</span>
-              <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
+              <span class="btn-indicator-arrow">&rarr;</span>
             </button>
-            <button type="reset" class="btn btn-secondary" id="resetBtn">Clear</button>
+            <button type="reset" class="btn-subtle" id="resetBtn">Reset</button>
           </div>
         </form>
       </section>
 
-      <!-- Submissions Display Column -->
-      <section class="card submissions-card">
-        <div class="card-header">
-          <div>
-            <div class="title-with-badge">
-              <h2 class="card-title">Saved Submissions</h2>
-              <span class="count-pill" id="submissionsCount">0</span>
-            </div>
-            <p class="card-subtitle">Verified records saved in the department portal.</p>
+      <!-- SECTION 02: VERIFIED SUBMISSIONS REGISTRY -->
+      <section class="section-card registry-panel">
+        <div class="panel-header">
+          <div class="section-indexer">
+            <span class="index-num">02</span>
+            <span class="index-rule">/</span>
+            <span class="index-tag">SUBMISSIONS REGISTRY</span>
           </div>
-          <button type="button" class="btn btn-icon" id="refreshBtn" title="Refresh submissions list">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-          </button>
+          <div class="registry-controls">
+            <span class="registry-counter" id="submissionsCountBadge">
+              <span class="count-digit" id="submissionsCount">0</span> RECORDS
+            </span>
+            <button type="button" class="btn-icon-minimal" id="refreshBtn" title="Sync with store">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <!-- Filter input -->
-        <div class="filter-box">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="filterInput" class="filter-control" placeholder="Search by name, reg #, or title...">
+        <!-- Filter bar styled as a search query console -->
+        <div class="query-bar">
+          <span class="query-prompt">&gt;</span>
+          <input 
+            type="text" 
+            id="filterInput" 
+            class="query-input font-mono" 
+            placeholder="Search records by student name, reg # or assignment..."
+          >
         </div>
 
-        <!-- List container -->
-        <div class="submissions-container" id="submissionsList">
-          <!-- Dynamic submission cards rendered by app.js -->
+        <!-- Ledger container -->
+        <div class="registry-ledger" id="submissionsList">
+          <!-- Dynamically populated entries -->
         </div>
       </section>
     </div>
 
-    <!-- Technical Specs & Pipeline Overview Footer -->
-    <footer class="footer-info">
-      <div class="info-card">
-        <span class="info-tag">Continuous Integration</span>
-        <p>Every push triggers automated validation tests in GitHub Actions runner.</p>
+    <!-- SECTION 03: DEVOPS PIPELINE & TELEMETRY STRIP -->
+    <section class="telemetry-console">
+      <div class="telemetry-bar-title">
+        <span class="console-label">SYSTEM_SPECS // PIPELINE_AUTOMATION</span>
+        <span class="console-branch">BRANCH: MAIN</span>
       </div>
-      <div class="info-card">
-        <span class="info-tag">Local Receiver</span>
-        <p>Test outcomes are dispatched to <code>POST /report</code> and stored as <code>test-report.json</code>.</p>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-cell">
+          <div class="cell-head">
+            <span class="cell-tag">SYS.01</span>
+            <span class="cell-title">Continuous Integration</span>
+          </div>
+          <p class="cell-desc">Triggers automated test runner on every push. Fails job upon any assertion failure.</p>
+          <div class="cell-stat">runner: <code>ubuntu-latest</code> &bull; test-suite: <code>jest</code></div>
+        </div>
+
+        <div class="telemetry-cell">
+          <div class="cell-head">
+            <span class="cell-tag">SYS.02</span>
+            <span class="cell-title">Local Report Receiver</span>
+          </div>
+          <p class="cell-desc">Listens for test results on <code>POST /report</code> and writes payload to <code>test-report.json</code>.</p>
+          <div class="cell-stat">port: <code>5050</code> &bull; mode: <code>if: always()</code></div>
+        </div>
+
+        <div class="telemetry-cell">
+          <div class="cell-head">
+            <span class="cell-tag">SYS.03</span>
+            <span class="cell-title">Conditional Deployment</span>
+          </div>
+          <p class="cell-desc">Publishes static frontend to GitHub Pages strictly when all tests for the commit pass.</p>
+          <div class="cell-stat">target: <code>gh-pages</code> &bull; guard: <code>needs: test</code></div>
+        </div>
       </div>
-      <div class="info-card">
-        <span class="info-tag">Conditional Deploy</span>
-        <p>Published to GitHub Pages on push to <code>main</code> strictly when all tests pass.</p>
-      </div>
-    </footer>
-  </div>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>

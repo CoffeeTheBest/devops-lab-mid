@@ -55,10 +55,10 @@ function clearFieldErrors() {
 
 // Show alert banner
 function showAlert(message, type = 'success') {
-  formAlert.className = `alert-box alert-${type}`;
+  formAlert.className = `system-alert-banner alert-${type}`;
   formAlert.innerHTML = `
-    <span>${type === 'success' ? '✅' : '⚠️'}</span>
-    <span>${message}</span>
+    <span>${type === 'success' ? '[STATUS: OK]' : '[ERROR]'}</span>
+    <span>${escapeHtml(message)}</span>
   `;
   formAlert.style.display = 'flex';
 }
@@ -69,7 +69,7 @@ async function detectBackend() {
     const res = await fetch('/health', { method: 'GET', headers: { 'Accept': 'application/json' } });
     if (res.ok) {
       isBackendLive = true;
-      modeText.textContent = 'Backend: Live API';
+      modeText.textContent = 'BACKEND: LIVE API';
       modeText.parentElement.style.borderColor = 'rgba(16, 185, 129, 0.4)';
       modeText.parentElement.style.color = '#34d399';
       return;
@@ -78,9 +78,9 @@ async function detectBackend() {
     // Backend offline / GitHub Pages mode
   }
   isBackendLive = false;
-  modeText.textContent = 'Demo Mode (Local)';
-  modeText.parentElement.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-  modeText.parentElement.style.color = '#fbbf24';
+  modeText.textContent = 'GH-PAGES: STATIC REPO';
+  modeText.parentElement.style.borderColor = 'var(--border-medium)';
+  modeText.parentElement.style.color = '#94a3b8';
 }
 
 // Fetch submissions
@@ -124,12 +124,9 @@ function renderSubmissions() {
 
   if (filtered.length === 0) {
     submissionsList.innerHTML = `
-      <div class="empty-state">
-        <svg class="empty-state-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="8" y1="12" x2="16" y2="12"></line>
-        </svg>
-        <p>${submissionsCache.length === 0 ? 'No assignments submitted yet.' : 'No matching submissions found.'}</p>
+      <div class="ledger-empty">
+        <span class="empty-msg">&gt; NO SUBMISSION RECORDS FOUND</span>
+        <span class="empty-diag">${submissionsCache.length === 0 ? 'The register is currently clear. Submit the form to add an entry.' : 'No entries match your search query.'}</span>
       </div>
     `;
     return;
@@ -138,20 +135,16 @@ function renderSubmissions() {
   submissionsList.innerHTML = filtered.map(item => {
     const dateStr = item.submittedAt ? new Date(item.submittedAt).toLocaleString() : 'Just now';
     return `
-      <div class="submission-item">
-        <div class="submission-meta-top">
-          <span class="student-reg">${escapeHtml(item.regNo)}</span>
-          <span class="submission-date">${dateStr}</span>
+      <div class="ledger-entry">
+        <div class="ledger-header">
+          <span class="ledger-reg-badge">${escapeHtml(item.regNo)}</span>
+          <span class="ledger-timestamp">${dateStr}</span>
         </div>
-        <div class="student-name">${escapeHtml(item.name)}</div>
-        <div class="assignment-name">${escapeHtml(item.assignmentTitle)}</div>
-        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="submission-url-link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
+        <div class="ledger-student">${escapeHtml(item.name)}</div>
+        <div class="ledger-title">${escapeHtml(item.assignmentTitle)}</div>
+        <a href="${encodeURI(item.submissionUrl)}" target="_blank" rel="noopener noreferrer" class="ledger-link">
           <span>${escapeHtml(item.submissionUrl)}</span>
+          <span class="link-arrow">&nearr;</span>
         </a>
       </div>
     `;
@@ -182,32 +175,32 @@ form.addEventListener('submit', async (e) => {
 
   // Client-side validation
   if (!name) {
-    nameError.textContent = 'Student name is required.';
+    nameError.textContent = '> Student name is required.';
     studentNameInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!regNo) {
-    regNoError.textContent = 'Registration number is required.';
+    regNoError.textContent = '> Registration number is required.';
     regNoInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!assignmentTitle) {
-    titleError.textContent = 'Assignment title is required.';
+    titleError.textContent = '> Assignment title is required.';
     titleInput.classList.add('is-invalid');
     hasError = true;
   }
   if (!submissionUrl) {
-    urlError.textContent = 'Submission URL is required.';
+    urlError.textContent = '> Submission link is required.';
     urlInput.classList.add('is-invalid');
     hasError = true;
   } else if (!isValidUrl(submissionUrl)) {
-    urlError.textContent = 'Invalid URL. Must begin with http:// or https://';
+    urlError.textContent = '> Invalid protocol. Must begin with http:// or https://';
     urlInput.classList.add('is-invalid');
     hasError = true;
   }
 
   if (hasError) {
-    showAlert('Please resolve the highlighted validation errors.', 'error');
+    showAlert('Resolve highlighted input errors before dispatching.', 'error');
     return;
   }
 
@@ -224,16 +217,16 @@ form.addEventListener('submit', async (e) => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        showAlert('Assignment submission saved successfully!', 'success');
+        showAlert('Submission saved and verified in register.', 'success');
         form.reset();
         await fetchSubmissions();
       } else {
         showAlert(data.error || 'Failed to save submission.', 'error');
         if (data.error?.toLowerCase().includes('registration')) {
-          regNoError.textContent = data.error;
+          regNoError.textContent = `> ${data.error}`;
           regNoInput.classList.add('is-invalid');
         } else if (data.error?.toLowerCase().includes('url')) {
-          urlError.textContent = data.error;
+          urlError.textContent = `> ${data.error}`;
           urlInput.classList.add('is-invalid');
         }
       }
@@ -249,12 +242,12 @@ form.addEventListener('submit', async (e) => {
       };
       submissionsCache.unshift(newRecord);
       localStorage.setItem('portal_submissions', JSON.stringify(submissionsCache));
-      showAlert('Submission saved locally (GitHub Pages Demo Mode)!', 'success');
+      showAlert('Record saved to browser ledger (GitHub Pages Static Host).', 'success');
       form.reset();
       renderSubmissions();
     }
   } catch (err) {
-    showAlert(`Submission error: ${err.message}`, 'error');
+    showAlert(`Network dispatch error: ${err.message}`, 'error');
   } finally {
     submitBtn.disabled = false;
   }
@@ -265,7 +258,7 @@ quickFillBtn.addEventListener('click', () => {
   studentNameInput.value = 'Muhammad Huzaifa';
   regNoInput.value = 'SP21-BCS-042';
   titleInput.value = 'DevOps Lab Mid - CI/CD Automation';
-  urlInput.value = 'https://github.com/huzaifa/devops-lab-mid';
+  urlInput.value = 'https://github.com/CoffeeTheBest/devops-lab-mid';
   clearFieldErrors();
 });
 
