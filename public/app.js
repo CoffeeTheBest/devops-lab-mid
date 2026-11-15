@@ -557,6 +557,13 @@ function initBootLoader() {
     if (status) status.textContent = 'SYSTEMS OPERATIONAL // LAUNCHING COCKPIT';
     setTimeout(() => {
       loader.classList.add('boot-completed');
+
+      // Trigger the movie-style staggered component-by-component materialization!
+      const viewport = document.getElementById('cockpitViewport');
+      if (viewport) {
+        viewport.classList.add('hud-online');
+      }
+
       setTimeout(() => loader.remove(), 700);
     }, 350);
   }

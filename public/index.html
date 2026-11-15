@@ -1506,6 +1506,119 @@ body::after {
 .text-amber { color: var(--status-amber) !important; }
 .text-rose { color: var(--status-rose) !important; }
 
+/* ==========================================================================
+   STAGGERED SCI-FI CINEMATIC HUD MATERIALIZATION (MOVIE-STYLE)
+   Components sequence onto a blank sector one-by-one upon boot completion
+   ========================================================================== */
+.cockpit-viewport:not(.hud-online) .stage-hud-item {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(24px) scale(0.975);
+  pointer-events: none;
+}
+
+.cockpit-viewport.hud-online .stage-hud-item {
+  animation: hudMaterialize 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cockpit-viewport.hud-online .stage-header {
+  animation-delay: 0.10s;
+}
+
+.cockpit-viewport.hud-online .stage-col-1 {
+  animation-delay: 0.32s;
+}
+
+.cockpit-viewport.hud-online .stage-col-2 {
+  animation-delay: 0.54s;
+}
+
+.cockpit-viewport.hud-online .stage-col-3 {
+  animation-delay: 0.76s;
+}
+
+.cockpit-viewport.hud-online .stage-footer {
+  animation-delay: 0.98s;
+}
+
+/* Internal cascading for footer cells */
+.cockpit-viewport:not(.hud-online) .telemetry-cell-quad .telemetry-unit-cell {
+  opacity: 0;
+}
+
+.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(1) {
+  animation: unitCellPop 0.4s ease forwards;
+  animation-delay: 1.08s;
+}
+.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(2) {
+  animation: unitCellPop 0.4s ease forwards;
+  animation-delay: 1.18s;
+}
+.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(3) {
+  animation: unitCellPop 0.4s ease forwards;
+  animation-delay: 1.28s;
+}
+.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(4) {
+  animation: unitCellPop 0.4s ease forwards;
+  animation-delay: 1.38s;
+}
+
+@keyframes hudMaterialize {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(24px) scale(0.975);
+    filter: blur(8px) brightness(2.2);
+    box-shadow: 0 0 50px rgba(168, 85, 247, 0.7);
+    border-color: rgba(192, 132, 252, 0.95);
+  }
+  40% {
+    opacity: 0.85;
+    visibility: visible;
+    filter: blur(2px) brightness(1.6);
+    border-color: var(--nebula-bright);
+    box-shadow: 0 0 35px rgba(168, 85, 247, 0.5);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.005);
+    filter: blur(0px) brightness(1.2);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    filter: blur(0px) brightness(1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes unitCellPop {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+    border-color: var(--nebula-primary);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cockpit-viewport .stage-hud-item,
+  .cockpit-viewport:not(.hud-online) .stage-hud-item,
+  .cockpit-viewport.hud-online .stage-hud-item {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+    pointer-events: auto !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1562,10 +1675,10 @@ body::after {
   <!-- Omarchy-Inspired Etched Pixel Dither Canvas Layer -->
   <canvas id="omarchyHeroCanvas" class="omarchy-hero-canvas" aria-hidden="true"></canvas>
 
-  <div class="cockpit-viewport">
+  <div class="cockpit-viewport" id="cockpitViewport">
 
     <!-- TOP HEADER / COSMIC HUD -->
-    <header class="cosmic-banner">
+    <header class="cosmic-banner stage-hud-item stage-header">
       <div class="brand-section">
         <div class="insignia-box">CUI//CSC418</div>
         <div class="brand-details">
@@ -1611,7 +1724,7 @@ body::after {
     <div class="cockpit-grid">
 
       <!-- COLUMN 01: SYSTEM & TEST SUITE MONITOR -->
-      <aside class="cockpit-card cockpit-col-telemetry">
+      <aside class="cockpit-card cockpit-col-telemetry stage-hud-item stage-col-1">
         <div class="card-terminal-bar">
           <div class="terminal-tag-group">
             <span class="tag-hex">[01]</span>
@@ -1694,7 +1807,7 @@ body::after {
       </aside>
 
       <!-- COLUMN 02: FORM DISPATCH UNIT -->
-      <section class="cockpit-card">
+      <section class="cockpit-card stage-hud-item stage-col-2">
         <div class="card-terminal-bar">
           <div class="terminal-tag-group">
             <span class="tag-hex">[02]</span>
@@ -1790,7 +1903,7 @@ body::after {
       </section>
 
       <!-- COLUMN 03: VERIFIED AUDIT LOG & REGISTRY STREAM -->
-      <section class="cockpit-card">
+      <section class="cockpit-card stage-hud-item stage-col-3">
         <div class="card-terminal-bar">
           <div class="terminal-tag-group">
             <span class="tag-hex">[03]</span>
@@ -1837,7 +1950,7 @@ body::after {
     </div>
 
     <!-- BOTTOM FULL-WIDTH HARDWARE & TELEMETRY RACK -->
-    <footer class="cockpit-footer-rack">
+    <footer class="cockpit-footer-rack stage-hud-item stage-footer">
       <div class="rack-header-bar">
         <span class="rack-label-main">// PIPELINE_TELEMETRY // DEVOPS_SPECIFICATION_V4</span>
         <span class="rack-label-branch">BRANCH: MAIN &bull; STATUS: VERIFIED</span>
