@@ -11,736 +11,739 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./style.css?v=8.0">
+  <link rel="stylesheet" href="./style.css?v=9.0">
 
   <style>
-    /* ==========================================================================
-       COSMIC OBSIDIAN & NEBULA PURPLE RETRO-TERMINAL BRUTALIST
-       Full-width cockpit layout, stellar starlight, high-legibility typography,
-       and universal theme consistency across all UI components.
-       ========================================================================== */
-
-    :root {
-      /* Cosmic Void & Obsidian Surfaces */
-      --space-void: #05060a;
-      --space-obsidian: #0a0b12;
-      --space-panel: #0e111a;
-      --space-panel-alt: #131624;
-      --space-input: #07080e;
-
-      /* Nebula Purple & Pulsar Accents (Vibrant, Non-Neon, High Contrast) */
-      --nebula-glow: rgba(168, 85, 247, 0.3);
-      --nebula-primary: #a855f7;
-      --nebula-bright: #c084fc;
-      --nebula-vibrant: #d8b4fe;
-      --nebula-deep: #7e22ce;
-      --nebula-dim: #581c87;
-      --nebula-faint: rgba(168, 85, 247, 0.08);
-
-      /* High-Legibility Starlight Neutrals (WCAG AAA Contrast) */
-      --stellar-indigo: #a5b4fc;
-      --stellar-cyan: #38bdf8;
-      --starlight-pure: #ffffff;
-      --starlight-white: #f8fafc;
-      --starlight-light: #e2e8f0;
-      --starlight-body: #cbd5e1;
-      --starlight-muted: #94a3b8;
-      --starlight-border: #222638;
-      --starlight-border-active: #3b4263;
-      --starlight-border-purple: #6b21a8;
-
-      --status-emerald: #34d399;
-      --status-amber: #fbbf24;
-      --status-rose: #f87171;
-
-      /* Fonts */
-      --font-pixel: 'Silkscreen', monospace;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-hud: 'Share Tech Mono', monospace;
-
-      /* Omarchy-Inspired 5-Tone Field & Gradient Color Bands */
-      --t-field-bg: #05060a;
-      --t-field-dim: #1f1338;
-      --t-field-mid: #581c87;
-      --t-field-lit: #a855f7;
-      --t-field-hover: #c084fc;
-      --t-field-crest: #f5f3ff;
-      --omarchy-band-gradient: linear-gradient(to right,
-        var(--t-field-dim) 0% 26.316%,
-        var(--t-field-mid) 26.316% 36.842%,
-        var(--t-field-lit) 36.842% 57.895%,
-        var(--t-field-hover) 57.895% 73.684%,
-        var(--t-field-crest) 73.684% 100%
-      );
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      border-radius: 0 !important; /* Strict brutalist geometry */
-    }
-
-    /* --------------------------------------------------------------------------
-       UNIVERSAL THEMING: SCROLLBARS, SELECTION, AND CARET
-       -------------------------------------------------------------------------- */
-    html {
-      scrollbar-width: thin;
-      scrollbar-color: var(--nebula-dim) var(--space-obsidian);
-    }
-
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: var(--nebula-dim) var(--space-obsidian);
-    }
-
-    *::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    *::-webkit-scrollbar-track {
-      background: var(--space-obsidian);
-      border: 1px solid var(--starlight-border);
-    }
-
-    *::-webkit-scrollbar-thumb {
-      background: var(--nebula-dim);
-      border: 1px solid var(--starlight-border-purple);
-      transition: background 0.15s ease;
-    }
-
-    *::-webkit-scrollbar-thumb:hover {
-      background: var(--nebula-primary);
-      box-shadow: 0 0 8px var(--nebula-glow);
-    }
-
-    *::-webkit-scrollbar-thumb:active {
-      background: var(--nebula-bright);
-    }
-
-    /* Custom cosmic selection */
-    ::selection {
-      background: #7e22ce;
-      color: #ffffff;
-      text-shadow: 0 0 6px rgba(216, 180, 254, 0.8);
-    }
-
-    input, select, textarea {
-      caret-color: var(--nebula-bright);
-    }
-
-    /* --------------------------------------------------------------------------
-       BODY & CRT ATMOSPHERE
-       -------------------------------------------------------------------------- */
-    body {
-      background-color: var(--space-void);
-      color: var(--starlight-body);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.55;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Omarchy-Inspired Fullscreen Canvas Layer */
-    .omarchy-hero-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-      display: block;
-    }
-
-    /* Subtle CRT scanline simulation */
-    body::before {
-      content: " ";
-      display: block;
-      position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-      background-size: 100% 4px;
-      z-index: 999;
-      pointer-events: none;
-      opacity: 0.6;
-    }
-
-    /* CRT vignette */
-    body::after {
-      content: " ";
-      display: block;
-      position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85);
-      z-index: 998;
-      pointer-events: none;
-    }
-
-    /* Full-Screen Cockpit Viewport */
-    .cockpit-viewport {
-      width: 100%;
-      max-width: 100%;
-      padding: 16px 28px 48px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* --------------------------------------------------------------------------
-       TOP BANNER & TELEMETRY HUD
-       -------------------------------------------------------------------------- */
-    .cosmic-banner {
-      border: 1px solid var(--starlight-border-active);
-      background-color: rgba(14, 17, 26, 0.94);
-      backdrop-filter: blur(8px);
-      padding: 14px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
-      position: relative;
-    }
-
-    .cosmic-banner::before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      height: 2px;
-      background: var(--omarchy-band-gradient);
-      pointer-events: none;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .insignia-box {
-      font-family: var(--font-pixel);
-      font-size: 11px;
-      font-weight: 700;
-      background-color: var(--nebula-dim);
-      background-image: linear-gradient(to bottom,
-        var(--t-field-crest) 0% 26.316%,
-        var(--t-field-hover) 26.316% 36.842%,
-        var(--t-field-lit) 36.842% 57.895%,
-        var(--t-field-mid) 57.895% 73.684%,
-        var(--t-field-dim) 73.684% 100%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: var(--t-field-crest);
-      padding: 8px 12px;
-      letter-spacing: 0.08em;
-      border: 1px solid var(--nebula-primary);
-      box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
-    }
-
-    .brand-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .kicker-subtext {
-      font-family: var(--font-hud);
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      color: var(--nebula-bright);
-      text-transform: uppercase;
-      margin-bottom: 2px;
-      font-weight: 700;
-    }
-
-    .cosmic-title {
-      font-family: var(--font-hud);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--starlight-pure);
-      text-shadow: 0 0 10px var(--nebula-glow);
-      line-height: 1.1;
-    }
-
-    .telemetry-deck {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .telemetry-pill {
-      font-family: var(--font-hud);
-      font-size: 12px;
-      letter-spacing: 0.05em;
-      border: 1px solid var(--starlight-border-active);
-      background: var(--space-void);
-      color: var(--starlight-light);
-      padding: 6px 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-    }
-
-    .pill-ci {
-      border-color: var(--nebula-primary);
-      color: var(--nebula-bright);
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
-    }
-
-    .pill-mode {
-      border-color: var(--starlight-border-active);
-      color: var(--starlight-light);
-    }
-
-    .starlight-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--nebula-bright);
-      display: inline-block;
-      box-shadow: 0 0 6px var(--nebula-primary);
-      animation: starlightBlink 1.4s steps(2, start) infinite;
-    }
-
-    @keyframes starlightBlink {
-      to { visibility: hidden; }
-    }
-
-    /* --------------------------------------------------------------------------
-       FULL-WIDTH COCKPIT 3-COLUMN WORKSPACE GRID
-       -------------------------------------------------------------------------- */
-    .cockpit-grid {
-      display: grid;
-      grid-template-columns: 0.85fr 1.15fr 1.25fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 1200px) {
-      .cockpit-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .cockpit-col-telemetry {
-        grid-column: span 2;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .cockpit-grid {
-        grid-template-columns: 1fr;
-      }
-      .cockpit-col-telemetry {
-        grid-column: span 1;
-      }
-    }
-
-    /* --------------------------------------------------------------------------
-       CARD WRAPPERS (BRUTALIST OBSIDIAN PANELS)
-       -------------------------------------------------------------------------- */
-    .cockpit-card {
-      background-color: rgba(14, 17, 26, 0.94);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--starlight-border);
-      padding: 18px 20px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-    }
-
-    .cockpit-card:hover {
-      border-color: var(--starlight-border-active);
-      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.7);
-    }
-
-    .cockpit-card::before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      height: 2px;
-      background: var(--omarchy-band-gradient);
-      pointer-events: none;
-    }
-
-    .card-terminal-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed var(--starlight-border);
-      gap: 10px;
-    }
-
-    .terminal-tag-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tag-hex {
-      font-family: var(--font-pixel);
-      font-size: 9.5px;
-      background: var(--space-void);
-      color: var(--nebula-bright);
-      border: 1px solid var(--starlight-border-purple);
-      padding: 3px 6px;
-    }
-
-    .tag-heading {
-      font-family: var(--font-pixel);
-      font-size: 9.5px;
-      color: var(--starlight-pure);
-      letter-spacing: 0.08em;
-    }
-
-    /* --------------------------------------------------------------------------
-       COLUMN 1: COSMIC LAB & SYSTEM MONITOR
-       -------------------------------------------------------------------------- */
-    .telemetry-module {
-      margin-bottom: 16px;
-    }
-
-    .module-subhead {
-      font-family: var(--font-hud);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--nebula-bright);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .test-matrix {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .matrix-row {
-      background: var(--space-input);
-      border: 1px solid var(--starlight-border);
-      padding: 8px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11.5px;
-      transition: all 0.15s ease;
-    }
-
-    .matrix-row:hover {
-      background: var(--space-panel-alt);
-      border-color: var(--starlight-border-purple);
-    }
-
-    .row-target {
-      font-family: var(--font-hud);
-      color: var(--starlight-light);
-      font-weight: 500;
-    }
-
-    .row-status-ok {
-      font-family: var(--font-hud);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--status-emerald);
-      background: rgba(52, 211, 153, 0.1);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      padding: 2px 6px;
-    }
-
-    .row-status-amber {
-      font-family: var(--font-hud);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--status-amber);
-      background: rgba(251, 191, 36, 0.1);
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      padding: 2px 6px;
-    }
-
-    .live-json-preview {
-      background: var(--space-input);
-      border: 1px solid var(--starlight-border);
-      padding: 10px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--stellar-indigo);
-      max-height: 190px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      line-height: 1.45;
-      transition: border-color 0.15s ease;
-    }
-
-    .live-json-preview:hover {
-      border-color: var(--starlight-border-purple);
-    }
-
-    /* --------------------------------------------------------------------------
-       COLUMN 2: DISPATCH PAYLOAD UNIT (FORM)
-       -------------------------------------------------------------------------- */
-    .cmd-lead-prompt {
-      font-family: var(--font-hud);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--nebula-bright);
-      margin-bottom: 16px;
-      padding: 7px 10px;
-      background: var(--nebula-faint);
-      border-left: 3px solid var(--nebula-primary);
-    }
-
-    .portal-form-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .cockpit-input-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .input-header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-      font-family: var(--font-hud);
-    }
-
-    .input-title {
-      font-size: 12px;
-      color: var(--starlight-pure);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    .input-meta-code {
-      font-size: 10.5px;
-      color: var(--stellar-indigo);
-    }
-
-    .cockpit-text-field {
-      width: 100%;
-      background-color: var(--space-input);
-      border: 1px solid var(--starlight-border);
-      padding: 10px 12px;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      color: var(--starlight-pure);
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
-
-    .cockpit-text-field::placeholder {
-      color: #475569;
-    }
-
-    .cockpit-text-field:hover {
-      border-color: var(--starlight-border-purple);
-      background-color: #0b0c14;
-    }
-
-    .cockpit-text-field:focus {
-      border-color: var(--nebula-bright);
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
-      background-color: #0d0f19;
-    }
-
-    .cockpit-text-field.is-invalid {
-      border-color: var(--status-rose);
-      background-color: rgba(248, 113, 113, 0.08);
-      color: #fca5a5;
-    }
-
-    .field-alert-msg {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--status-rose);
-      margin-top: 3px;
-      min-height: 15px;
-    }
-
-    /* Custom Cockpit Dropdowns / Select */
-    .cockpit-select {
-      background-color: var(--space-input);
-      border: 1px solid var(--starlight-border);
-      color: var(--starlight-light);
-      font-family: var(--font-hud);
-      font-size: 11.5px;
-      padding: 4px 8px;
-      outline: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .cockpit-select:hover {
-      border-color: var(--starlight-border-purple);
-      background-color: var(--space-panel-alt);
-    }
-
-    .cockpit-select:focus {
-      border-color: var(--nebula-bright);
-      box-shadow: 0 0 8px var(--nebula-glow);
-    }
-
-    .cockpit-select option {
-      background: var(--space-panel);
-      color: var(--starlight-light);
-    }
-
-    /* Banner feedback toast */
-    .cockpit-alert-toast {
-      padding: 10px 14px;
-      font-family: var(--font-hud);
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid var(--nebula-primary);
-      background: var(--nebula-faint);
-      color: var(--nebula-bright);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .alert-success {
-      border-color: var(--status-emerald);
-      background: rgba(52, 211, 153, 0.12);
-      color: var(--status-emerald);
-    }
-
-    .alert-error {
-      border-color: var(--status-rose);
-      background: rgba(248, 113, 113, 0.12);
-      color: #fca5a5;
-    }
-
-    /* Action Buttons */
-    .cockpit-actions-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .btn-cosmic-primary {
-      flex: 1;
-      background: var(--starlight-pure);
-      color: #000000;
-      font-family: var(--font-pixel);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      border: 1px solid var(--starlight-pure);
-      padding: 13px 18px;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.12s ease;
-      text-transform: uppercase;
-    }
-
-    .btn-cosmic-primary:hover {
-      background: var(--nebula-primary);
-      color: #ffffff;
-      border-color: var(--nebula-bright);
-      box-shadow: 0 0 16px var(--nebula-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn-cosmic-primary:active {
-      transform: translateY(1px);
-      box-shadow: 0 0 8px var(--nebula-glow);
-    }
-
-    .btn-cosmic-primary:focus-visible {
-      outline: 2px solid var(--nebula-bright);
-      outline-offset: 2px;
-    }
-
-    .btn-cosmic-primary:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-cosmic-subtle {
-      background: transparent;
-      color: var(--starlight-body);
-      font-family: var(--font-hud);
-      font-size: 12px;
-      border: 1px solid var(--starlight-border);
-      padding: 11px 16px;
-      cursor: pointer;
-      transition: all 0.12s ease;
-    }
-
-    .btn-cosmic-subtle:hover {
-      background: var(--space-panel-alt);
-      color: var(--starlight-pure);
-      border-color: var(--starlight-border-active);
-      transform: translateY(-1px);
-    }
-
-    .btn-cosmic-subtle:active {
-      transform: translateY(1px);
-    }
-
-    .btn-cosmic-subtle:focus-visible {
-      outline: 2px solid var(--nebula-bright);
-    }
-
-    .btn-cosmic-tool {
-      background: transparent;
-      color: var(--nebula-bright);
-      font-family: var(--font-hud);
-      font-size: 11px;
-      font-weight: 700;
-      border: 1px solid var(--starlight-border-purple);
-      padding: 5px 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-cosmic-tool:hover {
-      background: var(--nebula-deep);
-      color: var(--starlight-pure);
-      border-color: var(--nebula-primary);
-      transform: translateY(-1px);
-    }
-
-    .btn-cosmic-tool:active {
-      transform: translateY(1px);
-    }
-
-    .btn-cosmic-tool:focus-visible {
-      outline: 2px solid var(--nebula-bright);
-    }
-
-    /* --------------------------------------------------------------------------
-       COLUMN 3: EVALUATION AUDIT LOG (REGISTRY STREAM)
-       -------------------------------------------------------------------------- */
+/* ==========================================================================
+   COSMIC OBSIDIAN & NEBULA PURPLE RETRO-TERMINAL BRUTALIST
+   Full-width cockpit layout, stellar starlight, high-legibility typography,
+   and universal theme consistency across all UI components.
+   ========================================================================== */
+
+:root {
+  /* Cosmic Void & Obsidian Surfaces */
+  --space-void: #05060a;
+  --space-obsidian: #0a0b12;
+  --space-panel: #0e111a;
+  --space-panel-alt: #131624;
+  --space-input: #07080e;
+
+  /* Nebula Purple & Pulsar Accents (Vibrant, Non-Neon, High Contrast) */
+  --nebula-glow: rgba(168, 85, 247, 0.3);
+  --nebula-primary: #a855f7;
+  --nebula-bright: #c084fc;
+  --nebula-vibrant: #d8b4fe;
+  --nebula-deep: #7e22ce;
+  --nebula-dim: #581c87;
+  --nebula-faint: rgba(168, 85, 247, 0.08);
+
+  /* High-Legibility Starlight Neutrals (WCAG AAA Contrast) */
+  --stellar-indigo: #a5b4fc;
+  --stellar-cyan: #38bdf8;
+  --starlight-pure: #ffffff;
+  --starlight-white: #f8fafc;
+  --starlight-light: #e2e8f0;
+  --starlight-body: #cbd5e1;
+  --starlight-muted: #94a3b8;
+  --starlight-border: #222638;
+  --starlight-border-active: #3b4263;
+  --starlight-border-purple: #6b21a8;
+
+  --status-emerald: #34d399;
+  --status-amber: #fbbf24;
+  --status-rose: #f87171;
+
+  /* Fonts */
+  --font-pixel: 'Silkscreen', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-hud: 'Share Tech Mono', monospace;
+
+  /* Omarchy-Inspired 5-Tone Field & Gradient Color Bands */
+  --t-field-bg: #05060a;
+  --t-field-dim: #1f1338;
+  --t-field-mid: #581c87;
+  --t-field-lit: #a855f7;
+  --t-field-hover: #c084fc;
+  --t-field-crest: #f5f3ff;
+  --omarchy-band-gradient: linear-gradient(to right,
+    var(--t-field-dim) 0% 26.316%,
+    var(--t-field-mid) 26.316% 36.842%,
+    var(--t-field-lit) 36.842% 57.895%,
+    var(--t-field-hover) 57.895% 73.684%,
+    var(--t-field-crest) 73.684% 100%
+  );
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* Strict brutalist geometry */
+}
+
+/* --------------------------------------------------------------------------
+   UNIVERSAL THEMING: SCROLLBARS, SELECTION, AND CARET
+   -------------------------------------------------------------------------- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nebula-dim) var(--space-obsidian);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nebula-dim) var(--space-obsidian);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--space-obsidian);
+  border: 1px solid var(--starlight-border);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--nebula-dim);
+  border: 1px solid var(--starlight-border-purple);
+  transition: background 0.15s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--nebula-primary);
+  box-shadow: 0 0 8px var(--nebula-glow);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--nebula-bright);
+}
+
+/* Custom cosmic selection */
+::selection {
+  background: #7e22ce;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(216, 180, 254, 0.8);
+}
+
+input, select, textarea {
+  caret-color: var(--nebula-bright);
+}
+
+/* --------------------------------------------------------------------------
+   BODY & CRT ATMOSPHERE
+   -------------------------------------------------------------------------- */
+body {
+  background-color: var(--space-void);
+  color: var(--starlight-body);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Omarchy-Inspired Fullscreen Canvas Layer */
+.omarchy-hero-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+  opacity: 0.35; /* Subtle background animations as requested */
+  filter: blur(0.3px);
+  transition: opacity 0.5s ease;
+}
+
+/* Subtle CRT scanline simulation */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* CRT vignette */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85);
+  z-index: 998;
+  pointer-events: none;
+}
+
+/* Full-Screen Cockpit Viewport */
+.cockpit-viewport {
+  width: 100%;
+  max-width: 100%;
+  padding: 16px 28px 48px;
+  position: relative;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   TOP BANNER & TELEMETRY HUD
+   -------------------------------------------------------------------------- */
+.cosmic-banner {
+  border: 1px solid var(--starlight-border-active);
+  background-color: rgba(14, 17, 26, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  position: relative;
+}
+
+.cosmic-banner::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: var(--omarchy-band-gradient);
+  pointer-events: none;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.insignia-box {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  font-weight: 700;
+  background-color: var(--nebula-dim);
+  background-image: linear-gradient(to bottom,
+    var(--t-field-crest) 0% 26.316%,
+    var(--t-field-hover) 26.316% 36.842%,
+    var(--t-field-lit) 36.842% 57.895%,
+    var(--t-field-mid) 57.895% 73.684%,
+    var(--t-field-dim) 73.684% 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: var(--t-field-crest);
+  padding: 8px 12px;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--nebula-primary);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+}
+
+.brand-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker-subtext {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--nebula-bright);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  font-weight: 700;
+}
+
+.cosmic-title {
+  font-family: var(--font-hud);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--starlight-pure);
+  text-shadow: 0 0 10px var(--nebula-glow);
+  line-height: 1.1;
+}
+
+.telemetry-deck {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.telemetry-pill {
+  font-family: var(--font-hud);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--starlight-border-active);
+  background: var(--space-void);
+  color: var(--starlight-light);
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.pill-ci {
+  border-color: var(--nebula-primary);
+  color: var(--nebula-bright);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
+}
+
+.pill-mode {
+  border-color: var(--starlight-border-active);
+  color: var(--starlight-light);
+}
+
+.starlight-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--nebula-bright);
+  display: inline-block;
+  box-shadow: 0 0 6px var(--nebula-primary);
+  animation: starlightBlink 1.4s steps(2, start) infinite;
+}
+
+@keyframes starlightBlink {
+  to { visibility: hidden; }
+}
+
+/* --------------------------------------------------------------------------
+   FULL-WIDTH COCKPIT 3-COLUMN WORKSPACE GRID
+   -------------------------------------------------------------------------- */
+.cockpit-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr 1.25fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1200px) {
+  .cockpit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cockpit-col-telemetry {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 860px) {
+  .cockpit-grid {
+    grid-template-columns: 1fr;
+  }
+  .cockpit-col-telemetry {
+    grid-column: span 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   CARD WRAPPERS (BRUTALIST OBSIDIAN PANELS)
+   -------------------------------------------------------------------------- */
+.cockpit-card {
+  background-color: rgba(14, 17, 26, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--starlight-border);
+  padding: 18px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.cockpit-card:hover {
+  border-color: var(--starlight-border-active);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.7);
+}
+
+.cockpit-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: var(--omarchy-band-gradient);
+  pointer-events: none;
+}
+
+.card-terminal-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--starlight-border);
+  gap: 10px;
+}
+
+.terminal-tag-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag-hex {
+  font-family: var(--font-pixel);
+  font-size: 9.5px;
+  background: var(--space-void);
+  color: var(--nebula-bright);
+  border: 1px solid var(--starlight-border-purple);
+  padding: 3px 6px;
+}
+
+.tag-heading {
+  font-family: var(--font-pixel);
+  font-size: 9.5px;
+  color: var(--starlight-pure);
+  letter-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------------------
+   COLUMN 1: COSMIC LAB & SYSTEM MONITOR
+   -------------------------------------------------------------------------- */
+.telemetry-module {
+  margin-bottom: 16px;
+}
+
+.module-subhead {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--nebula-bright);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.test-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.matrix-row {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  transition: all 0.15s ease;
+}
+
+.matrix-row:hover {
+  background: var(--space-panel-alt);
+  border-color: var(--starlight-border-purple);
+}
+
+.row-target {
+  font-family: var(--font-hud);
+  color: var(--starlight-light);
+  font-weight: 500;
+}
+
+.row-status-ok {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-emerald);
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  padding: 2px 6px;
+}
+
+.row-status-amber {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-amber);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 2px 6px;
+}
+
+.live-json-preview {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--stellar-indigo);
+  max-height: 190px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.45;
+  transition: border-color 0.15s ease;
+}
+
+.live-json-preview:hover {
+  border-color: var(--starlight-border-purple);
+}
+
+/* --------------------------------------------------------------------------
+   COLUMN 2: DISPATCH PAYLOAD UNIT (FORM)
+   -------------------------------------------------------------------------- */
+.cmd-lead-prompt {
+  font-family: var(--font-hud);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--nebula-bright);
+  margin-bottom: 16px;
+  padding: 7px 10px;
+  background: var(--nebula-faint);
+  border-left: 3px solid var(--nebula-primary);
+}
+
+.portal-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cockpit-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-family: var(--font-hud);
+}
+
+.input-title {
+  font-size: 12px;
+  color: var(--starlight-pure);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.input-meta-code {
+  font-size: 10.5px;
+  color: var(--stellar-indigo);
+}
+
+.cockpit-text-field {
+  width: 100%;
+  background-color: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--starlight-pure);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.cockpit-text-field::placeholder {
+  color: #475569;
+}
+
+.cockpit-text-field:hover {
+  border-color: var(--starlight-border-purple);
+  background-color: #0b0c14;
+}
+
+.cockpit-text-field:focus {
+  border-color: var(--nebula-bright);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+  background-color: #0d0f19;
+}
+
+.cockpit-text-field.is-invalid {
+  border-color: var(--status-rose);
+  background-color: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+}
+
+.field-alert-msg {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--status-rose);
+  margin-top: 3px;
+  min-height: 15px;
+}
+
+/* Custom Cockpit Dropdowns / Select */
+.cockpit-select {
+  background-color: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-light);
+  font-family: var(--font-hud);
+  font-size: 11.5px;
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cockpit-select:hover {
+  border-color: var(--starlight-border-purple);
+  background-color: var(--space-panel-alt);
+}
+
+.cockpit-select:focus {
+  border-color: var(--nebula-bright);
+  box-shadow: 0 0 8px var(--nebula-glow);
+}
+
+.cockpit-select option {
+  background: var(--space-panel);
+  color: var(--starlight-light);
+}
+
+/* Banner feedback toast */
+.cockpit-alert-toast {
+  padding: 10px 14px;
+  font-family: var(--font-hud);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--nebula-primary);
+  background: var(--nebula-faint);
+  color: var(--nebula-bright);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.alert-success {
+  border-color: var(--status-emerald);
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--status-emerald);
+}
+
+.alert-error {
+  border-color: var(--status-rose);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+}
+
+/* Action Buttons */
+.cockpit-actions-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-cosmic-primary {
+  flex: 1;
+  background: var(--starlight-pure);
+  color: #000000;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--starlight-pure);
+  padding: 13px 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.12s ease;
+  text-transform: uppercase;
+}
+
+.btn-cosmic-primary:hover {
+  background: var(--nebula-primary);
+  color: #ffffff;
+  border-color: var(--nebula-bright);
+  box-shadow: 0 0 16px var(--nebula-glow);
+  transform: translateY(-1px);
+}
+
+.btn-cosmic-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 8px var(--nebula-glow);
+}
+
+.btn-cosmic-primary:focus-visible {
+  outline: 2px solid var(--nebula-bright);
+  outline-offset: 2px;
+}
+
+.btn-cosmic-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-cosmic-subtle {
+  background: transparent;
+  color: var(--starlight-body);
+  font-family: var(--font-hud);
+  font-size: 12px;
+  border: 1px solid var(--starlight-border);
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.btn-cosmic-subtle:hover {
+  background: var(--space-panel-alt);
+  color: var(--starlight-pure);
+  border-color: var(--starlight-border-active);
+  transform: translateY(-1px);
+}
+
+.btn-cosmic-subtle:active {
+  transform: translateY(1px);
+}
+
+.btn-cosmic-subtle:focus-visible {
+  outline: 2px solid var(--nebula-bright);
+}
+
+.btn-cosmic-tool {
+  background: transparent;
+  color: var(--nebula-bright);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--starlight-border-purple);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cosmic-tool:hover {
+  background: var(--nebula-deep);
+  color: var(--starlight-pure);
+  border-color: var(--nebula-primary);
+  transform: translateY(-1px);
+}
+
+.btn-cosmic-tool:active {
+  transform: translateY(1px);
+}
+
+.btn-cosmic-tool:focus-visible {
+  outline: 2px solid var(--nebula-bright);
+}
+
+/* --------------------------------------------------------------------------
+   COLUMN 3: EVALUATION AUDIT LOG (REGISTRY STREAM)
+   -------------------------------------------------------------------------- */
     .registry-header-tools {
       display: flex;
       align-items: center;
@@ -1056,9 +1059,506 @@
       color: var(--nebula-bright);
       font-family: inherit;
     }
+
+/* ==========================================================================
+   RETRO-TERMINAL TELEMETRY BOOT SEQUENCE LOADER
+   ========================================================================== */
+.boot-screen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background-color: #05060a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.65s ease;
+}
+
+.boot-screen-overlay.boot-completed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.boot-terminal-window {
+  width: 100%;
+  max-width: 760px;
+  background: rgba(10, 11, 18, 0.98);
+  border: 1px solid var(--starlight-border-purple);
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.22), 0 20px 60px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.boot-terminal-window::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: var(--omarchy-band-gradient);
+}
+
+.boot-header-bar {
+  background: #0f121d;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--starlight-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boot-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boot-hex-code {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--nebula-bright);
+  letter-spacing: 0.08em;
+}
+
+.boot-sub-tag {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--starlight-muted);
+  border-left: 1px solid var(--starlight-border-active);
+  padding-left: 10px;
+}
+
+.boot-skip-button {
+  background: transparent;
+  border: 1px solid var(--nebula-dim);
+  color: var(--nebula-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boot-skip-button:hover {
+  background: var(--nebula-dim);
+  color: var(--starlight-pure);
+  border-color: var(--nebula-primary);
+}
+
+.boot-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.boot-ascii-banner {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.15;
+  color: var(--nebula-primary);
+  white-space: pre;
+  overflow-x: auto;
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+  margin-bottom: 4px;
+}
+
+.boot-info-deck {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--starlight-muted);
+  background: #07080e;
+  padding: 10px 14px;
+  border: 1px solid var(--starlight-border);
+}
+
+.boot-meta-label {
+  color: var(--starlight-muted);
+}
+
+.boot-meta-val {
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.boot-progress-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boot-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-hud);
+  font-size: 11.5px;
+  color: var(--nebula-bright);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.boot-progress-bar-track {
+  height: 8px;
+  background: #080911;
+  border: 1px solid var(--starlight-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.boot-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--nebula-dim), var(--nebula-primary), var(--nebula-bright));
+  box-shadow: 0 0 12px var(--nebula-primary);
+  transition: width 0.18s ease-out;
+}
+
+.boot-log-console {
+  background: #05060a;
+  border: 1px solid var(--starlight-border);
+  padding: 14px;
+  min-height: 140px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--starlight-light);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.boot-log-line {
+  display: flex;
+  gap: 8px;
+  animation: fadeInLine 0.2s ease-in;
+}
+
+@keyframes fadeInLine {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.boot-log-ts {
+  color: var(--nebula-dim);
+}
+
+.boot-log-tag {
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.boot-log-msg {
+  color: var(--starlight-body);
+  flex-grow: 1;
+}
+
+.boot-log-status {
+  font-weight: 700;
+}
+
+.status-ok { color: var(--status-emerald); }
+.status-warn { color: var(--status-amber); }
+.status-fail { color: var(--status-rose); }
+
+/* --------------------------------------------------------------------------
+   LIVE TELEMETRY STRIP & INTERACTIVE QUALITY GATES
+   -------------------------------------------------------------------------- */
+.live-git-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: rgba(7, 8, 14, 0.9);
+  border: 1px solid var(--starlight-border);
+  padding: 8px 16px;
+  font-family: var(--font-hud);
+  font-size: 11px;
+}
+
+.git-strip-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.git-strip-label {
+  color: var(--starlight-muted);
+  font-weight: 600;
+}
+
+.git-strip-link {
+  color: var(--nebula-bright);
+  text-decoration: none;
+}
+
+.git-strip-link:hover {
+  text-decoration: underline;
+  color: var(--nebula-vibrant);
+}
+
+.git-strip-code {
+  background: var(--space-panel-alt);
+  border: 1px solid var(--starlight-border-purple);
+  color: var(--nebula-vibrant);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50% !important;
+  background: var(--status-emerald);
+  box-shadow: 0 0 8px var(--status-emerald);
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.btn-run-audit {
+  width: 100%;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid var(--nebula-primary);
+  color: var(--nebula-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.btn-run-audit:hover {
+  background: var(--nebula-primary);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+
+.btn-run-audit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.module-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.audit-timer-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--starlight-muted);
+  background: var(--space-void);
+  border: 1px solid var(--starlight-border);
+  padding: 2px 6px;
+}
+
+.row-status-fail {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-rose);
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  padding: 2px 6px;
+}
+
+.row-status-amber {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-amber);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 2px 6px;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 5 WORKFLOW SIMULATOR CONTROLLER
+   -------------------------------------------------------------------------- */
+.workflow-sim-box {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  padding: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workflow-sim-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-hud);
+  font-size: 10.5px;
+  color: var(--starlight-muted);
+  letter-spacing: 0.05em;
+}
+
+.sim-state-tag {
+  color: var(--nebula-bright);
+  font-weight: 700;
+}
+
+.workflow-sim-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.sim-btn {
+  background: var(--space-panel);
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-body);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+}
+
+.sim-btn:hover, .sim-btn.active {
+  background: var(--nebula-dim);
+  border-color: var(--nebula-bright);
+  color: var(--starlight-pure);
+}
+
+.sim-btn.sim-fail:hover, .sim-btn.sim-fail.active {
+  background: #3d0c0c;
+  border-color: var(--status-rose);
+  color: #ff8080;
+}
+
+/* --------------------------------------------------------------------------
+   TABBED JSON INSPECTOR & FIELD BADGES
+   -------------------------------------------------------------------------- */
+.json-tab-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.json-tab-btn {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.json-tab-btn:hover {
+  color: var(--starlight-pure);
+  border-color: var(--starlight-border-active);
+}
+
+.json-tab-btn.active {
+  background: var(--space-panel-alt);
+  border-color: var(--nebula-bright);
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.field-valid-badge {
+  font-family: var(--font-hud);
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-muted);
+  background: var(--space-void);
+  transition: all 0.2s ease;
+}
+
+.field-valid-badge.valid {
+  border-color: var(--status-emerald);
+  color: var(--status-emerald);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+.field-valid-badge.invalid {
+  border-color: var(--status-rose);
+  color: var(--status-rose);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.text-emerald { color: var(--status-emerald) !important; }
+.text-amber { color: var(--status-amber) !important; }
+.text-rose { color: var(--status-rose) !important; }
+
   </style>
 </head>
 <body>
+
+  <!-- =========================================================================
+       RETRO-TERMINAL TELEMETRY BOOT SEQUENCE LOADER
+       ========================================================================= -->
+  <div id="cosmicBootLoader" class="boot-screen-overlay" aria-label="System Initializing">
+    <div class="boot-terminal-window">
+      <div class="boot-header-bar">
+        <div class="boot-title-group">
+          <span class="boot-hex-code">SYS.BOOT // KERNEL_INIT</span>
+          <span class="boot-sub-tag">COMSATS CSC418 DEVOPS AUTOMATION</span>
+        </div>
+        <button type="button" id="skipBootBtn" class="boot-skip-button" title="Fast Boot into Cockpit">
+          [ FAST_BOOT &gt;&gt; ]
+        </button>
+      </div>
+
+      <div class="boot-body">
+        <div class="boot-ascii-banner">
+  ██████╗ ███████╗██╗   ██╗ ██████╗ ██████╗ ███████╗     ██████╗██╗
+  ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔════╝    ██╔════╝██║
+  ██║  ██║█████╗  ██║   ██║██║   ██║██████╔╝███████╗    ██║     ██║
+  ██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║██╔═══╝ ╚════██║    ██║     ██║
+  ██████╔╝███████╗ ╚████╔╝ ╚██████╔╝██║     ███████║    ╚██████╗██║
+  ╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝     ╚══════╝     ╚═════╝╚═╝
+        </div>
+
+        <div class="boot-info-deck">
+          <div><span class="boot-meta-label">INSTITUTION:</span> <span class="boot-meta-val">COMSATS ATTOCK</span></div>
+          <div><span class="boot-meta-label">COURSE:</span> <span class="boot-meta-val">CSC418 CLOUD DEVOPS</span></div>
+          <div><span class="boot-meta-label">PIPELINE:</span> <span class="boot-meta-val">GITHUB ACTIONS</span></div>
+          <div><span class="boot-meta-label">ISOLATION:</span> <span class="boot-meta-val">STRICT CI ENFORCED</span></div>
+        </div>
+
+        <div class="boot-progress-frame">
+          <div class="boot-progress-labels">
+            <span id="bootStatusText">INITIALIZING KERNEL &amp; TELEMETRY HARNESS...</span>
+            <span id="bootPercentText">0%</span>
+          </div>
+          <div class="boot-progress-bar-track">
+            <div id="bootProgressBar" class="boot-progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="boot-log-console" id="bootLogConsole">
+          <!-- Populated sequentially by app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Omarchy-Inspired Etched Pixel Dither Canvas Layer -->
   <canvas id="omarchyHeroCanvas" class="omarchy-hero-canvas" aria-hidden="true"></canvas>
 
@@ -1074,10 +1574,31 @@
         </div>
       </div>
 
+      <!-- Real-time Live Git & Pipeline Strip -->
+      <div class="live-git-strip">
+        <div class="git-strip-cell">
+          <span class="live-pulse-dot"></span>
+          <span class="git-strip-label">ORIGIN:</span>
+          <a href="https://github.com/CoffeeTheBest/devops-lab-mid" target="_blank" rel="noopener noreferrer" class="git-strip-link">CoffeeTheBest/devops-lab-mid</a>
+        </div>
+        <div class="git-strip-cell">
+          <span class="git-strip-label">SHA:</span>
+          <code id="liveCommitSha" class="git-strip-code">98b9035</code>
+        </div>
+        <div class="git-strip-cell">
+          <span class="git-strip-label">SYNC:</span>
+          <span id="liveSyncStatus" class="git-strip-val text-emerald">VERIFIED (PASS 4/4)</span>
+        </div>
+        <div class="git-strip-cell">
+          <span class="git-strip-label">UTC:</span>
+          <span id="liveUtcClock" class="git-strip-time">00:00:00</span>
+        </div>
+      </div>
+
       <div class="telemetry-deck">
         <div class="telemetry-pill pill-ci" id="ciStatusBadge">
           <span class="starlight-dot"></span>
-          <span>CI_PIPELINE: ACTIVE</span>
+          <span id="ciStatusText">CI_PIPELINE: ACTIVE</span>
         </div>
         <div class="telemetry-pill pill-mode" id="appModeBadge">
           <span>&gt;</span>
@@ -1099,36 +1620,71 @@
           <span class="tag-hex">CSC418</span>
         </div>
 
+        <!-- Live Quality Gate Runner button -->
+        <button type="button" id="runLiveAuditBtn" class="btn-run-audit">
+          <span class="audit-run-icon">▶</span>
+          <span>[ RUN LIVE QUALITY GATE AUDIT ]</span>
+        </button>
+
         <!-- Automated Test Case Matrix -->
         <div class="telemetry-module">
-          <span class="module-subhead">// AUTOMATED TEST MATRIX</span>
-          <div class="test-matrix">
-            <div class="matrix-row">
+          <div class="module-header-row">
+            <span class="module-subhead">// AUTOMATED TEST MATRIX (CLO-4)</span>
+            <span id="auditTimerBadge" class="audit-timer-tag">IDLE</span>
+          </div>
+          <div class="test-matrix" id="testMatrixContainer">
+            <div class="matrix-row" id="tc01Row">
               <span class="row-target">TC.01 VALID_PAYLOAD_PERSIST</span>
-              <span class="row-status-ok">PASS [201]</span>
+              <span class="row-status-ok" id="tc01Status">PASS [201]</span>
             </div>
-            <div class="matrix-row">
+            <div class="matrix-row" id="tc02Row">
               <span class="row-target">TC.02 MISSING_REG_NO_REJECT</span>
-              <span class="row-status-ok">PASS [400]</span>
+              <span class="row-status-ok" id="tc02Status">PASS [400]</span>
             </div>
-            <div class="matrix-row">
+            <div class="matrix-row" id="tc03Row">
               <span class="row-target">TC.03 INVALID_URL_PROTOCOL</span>
-              <span class="row-status-ok">PASS [400]</span>
+              <span class="row-status-ok" id="tc03Status">PASS [400]</span>
             </div>
-            <div class="matrix-row">
+            <div class="matrix-row" id="tc04Row">
               <span class="row-target">TC.04 BONUS_PAGES_DEPLOY</span>
-              <span class="row-status-ok">ACTIVE</span>
+              <span class="row-status-ok" id="tc04Status">ACTIVE</span>
             </div>
-            <div class="matrix-row">
+            <div class="matrix-row" id="tc05Row">
               <span class="row-target">TC.05 BONUS_EMAIL_REPORTER</span>
-              <span class="row-status-amber">CONFIG</span>
+              <span class="row-status-ok" id="tc05Status">VERIFIED</span>
             </div>
           </div>
         </div>
 
-        <!-- Live JSON Dispatch Inspector -->
+        <!-- Task 5 Interactive Workflow Simulator -->
+        <div class="workflow-sim-box">
+          <div class="workflow-sim-title">
+            <span>TASK 5: WORKFLOW SIMULATOR</span>
+            <span id="simActiveState" class="sim-state-tag">STATE: NOMINAL</span>
+          </div>
+          <div class="workflow-sim-btn-group">
+            <button type="button" id="simPassBtn" class="sim-btn active" title="Demonstrate normal passing state">
+              1. PASS
+            </button>
+            <button type="button" id="simFailBtn" class="sim-btn sim-fail" title="Simulate introduced defect (failing test)">
+              2. DEFECT
+            </button>
+            <button type="button" id="simFixBtn" class="sim-btn" title="Simulate bug fix and restored pipeline">
+              3. FIX
+            </button>
+          </div>
+        </div>
+
+        <!-- Live JSON Dispatch Inspector & Report Viewer -->
         <div class="telemetry-module" style="margin-bottom: 0;">
-          <span class="module-subhead">// LIVE JSON PAYLOAD STREAM</span>
+          <div class="json-tab-bar">
+            <button type="button" id="tabPayloadBtn" class="json-tab-btn active">
+              DISPATCH_PAYLOAD
+            </button>
+            <button type="button" id="tabReportBtn" class="json-tab-btn">
+              TEST-REPORT.JSON
+            </button>
+          </div>
           <pre class="live-json-preview" id="jsonPreviewBox">{
   "status": "AWAITING_INPUT",
   "target": "/api/submissions",
@@ -1157,7 +1713,7 @@
           <div class="cockpit-input-group">
             <div class="input-header-bar">
               <label for="studentName" class="input-title">STUDENT_FULL_NAME</label>
-              <span class="input-meta-code">[STR / REQUIRED]</span>
+              <span class="input-meta-code field-valid-badge" id="nameBadge">[REQUIRED]</span>
             </div>
             <input 
               type="text" 
@@ -1174,7 +1730,7 @@
           <div class="cockpit-input-group">
             <div class="input-header-bar">
               <label for="regNo" class="input-title">REGISTRATION_NUMBER</label>
-              <span class="input-meta-code">[ID / UNIQUE]</span>
+              <span class="input-meta-code field-valid-badge" id="regNoBadge">[REQUIRED]</span>
             </div>
             <input 
               type="text" 
@@ -1190,7 +1746,7 @@
           <div class="cockpit-input-group">
             <div class="input-header-bar">
               <label for="assignmentTitle" class="input-title">ASSIGNMENT_TITLE</label>
-              <span class="input-meta-code">[STR / LAB_ID]</span>
+              <span class="input-meta-code field-valid-badge" id="titleBadge">[REQUIRED]</span>
             </div>
             <input 
               type="text" 
@@ -1206,7 +1762,7 @@
           <div class="cockpit-input-group">
             <div class="input-header-bar">
               <label for="submissionUrl" class="input-title">REPOSITORY_URL</label>
-              <span class="input-meta-code">[URI / HTTP_HTTPS]</span>
+              <span class="input-meta-code field-valid-badge" id="urlBadge">[URI / PROTOCOL_CHECK]</span>
             </div>
             <input 
               type="url" 
@@ -1244,6 +1800,9 @@
             <span class="audit-records-badge" id="submissionsCountBadge">
               <span id="submissionsCount">0</span> RECORDS
             </span>
+            <button type="button" class="btn-cosmic-tool" id="exportRecordsBtn" title="Export saved records as JSON">
+              [⬇ EXPORT]
+            </button>
             <button type="button" class="btn-sync-glyph" id="refreshBtn" title="Sync with store">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 4 23 10 17 10"></polyline>
@@ -1325,6 +1884,6 @@
 
   </div>
 
-  <script src="./app.js?v=8.0"></script>
+  <script src="./app.js?v=9.0"></script>
 </body>
 </html>

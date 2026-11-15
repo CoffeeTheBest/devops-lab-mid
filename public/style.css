@@ -139,6 +139,9 @@ body {
   pointer-events: none;
   z-index: 0;
   display: block;
+  opacity: 0.35; /* Subtle background animations as requested */
+  filter: blur(0.3px);
+  transition: opacity 0.5s ease;
 }
 
 /* Subtle CRT scanline simulation */
@@ -1040,3 +1043,449 @@ body::after {
       color: var(--nebula-bright);
       font-family: inherit;
     }
+
+/* ==========================================================================
+   RETRO-TERMINAL TELEMETRY BOOT SEQUENCE LOADER
+   ========================================================================== */
+.boot-screen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background-color: #05060a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.65s ease;
+}
+
+.boot-screen-overlay.boot-completed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.boot-terminal-window {
+  width: 100%;
+  max-width: 760px;
+  background: rgba(10, 11, 18, 0.98);
+  border: 1px solid var(--starlight-border-purple);
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.22), 0 20px 60px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.boot-terminal-window::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: var(--omarchy-band-gradient);
+}
+
+.boot-header-bar {
+  background: #0f121d;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--starlight-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boot-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boot-hex-code {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--nebula-bright);
+  letter-spacing: 0.08em;
+}
+
+.boot-sub-tag {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--starlight-muted);
+  border-left: 1px solid var(--starlight-border-active);
+  padding-left: 10px;
+}
+
+.boot-skip-button {
+  background: transparent;
+  border: 1px solid var(--nebula-dim);
+  color: var(--nebula-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boot-skip-button:hover {
+  background: var(--nebula-dim);
+  color: var(--starlight-pure);
+  border-color: var(--nebula-primary);
+}
+
+.boot-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.boot-ascii-banner {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.15;
+  color: var(--nebula-primary);
+  white-space: pre;
+  overflow-x: auto;
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+  margin-bottom: 4px;
+}
+
+.boot-info-deck {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--starlight-muted);
+  background: #07080e;
+  padding: 10px 14px;
+  border: 1px solid var(--starlight-border);
+}
+
+.boot-meta-label {
+  color: var(--starlight-muted);
+}
+
+.boot-meta-val {
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.boot-progress-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boot-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-hud);
+  font-size: 11.5px;
+  color: var(--nebula-bright);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.boot-progress-bar-track {
+  height: 8px;
+  background: #080911;
+  border: 1px solid var(--starlight-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.boot-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--nebula-dim), var(--nebula-primary), var(--nebula-bright));
+  box-shadow: 0 0 12px var(--nebula-primary);
+  transition: width 0.18s ease-out;
+}
+
+.boot-log-console {
+  background: #05060a;
+  border: 1px solid var(--starlight-border);
+  padding: 14px;
+  min-height: 140px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--starlight-light);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.boot-log-line {
+  display: flex;
+  gap: 8px;
+  animation: fadeInLine 0.2s ease-in;
+}
+
+@keyframes fadeInLine {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.boot-log-ts {
+  color: var(--nebula-dim);
+}
+
+.boot-log-tag {
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.boot-log-msg {
+  color: var(--starlight-body);
+  flex-grow: 1;
+}
+
+.boot-log-status {
+  font-weight: 700;
+}
+
+.status-ok { color: var(--status-emerald); }
+.status-warn { color: var(--status-amber); }
+.status-fail { color: var(--status-rose); }
+
+/* --------------------------------------------------------------------------
+   LIVE TELEMETRY STRIP & INTERACTIVE QUALITY GATES
+   -------------------------------------------------------------------------- */
+.live-git-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: rgba(7, 8, 14, 0.9);
+  border: 1px solid var(--starlight-border);
+  padding: 8px 16px;
+  font-family: var(--font-hud);
+  font-size: 11px;
+}
+
+.git-strip-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.git-strip-label {
+  color: var(--starlight-muted);
+  font-weight: 600;
+}
+
+.git-strip-link {
+  color: var(--nebula-bright);
+  text-decoration: none;
+}
+
+.git-strip-link:hover {
+  text-decoration: underline;
+  color: var(--nebula-vibrant);
+}
+
+.git-strip-code {
+  background: var(--space-panel-alt);
+  border: 1px solid var(--starlight-border-purple);
+  color: var(--nebula-vibrant);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50% !important;
+  background: var(--status-emerald);
+  box-shadow: 0 0 8px var(--status-emerald);
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.btn-run-audit {
+  width: 100%;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid var(--nebula-primary);
+  color: var(--nebula-bright);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.btn-run-audit:hover {
+  background: var(--nebula-primary);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+
+.btn-run-audit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.module-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.audit-timer-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--starlight-muted);
+  background: var(--space-void);
+  border: 1px solid var(--starlight-border);
+  padding: 2px 6px;
+}
+
+.row-status-fail {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-rose);
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  padding: 2px 6px;
+}
+
+.row-status-amber {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-amber);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 2px 6px;
+}
+
+/* --------------------------------------------------------------------------
+   TASK 5 WORKFLOW SIMULATOR CONTROLLER
+   -------------------------------------------------------------------------- */
+.workflow-sim-box {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  padding: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workflow-sim-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-hud);
+  font-size: 10.5px;
+  color: var(--starlight-muted);
+  letter-spacing: 0.05em;
+}
+
+.sim-state-tag {
+  color: var(--nebula-bright);
+  font-weight: 700;
+}
+
+.workflow-sim-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.sim-btn {
+  background: var(--space-panel);
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-body);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: center;
+}
+
+.sim-btn:hover, .sim-btn.active {
+  background: var(--nebula-dim);
+  border-color: var(--nebula-bright);
+  color: var(--starlight-pure);
+}
+
+.sim-btn.sim-fail:hover, .sim-btn.sim-fail.active {
+  background: #3d0c0c;
+  border-color: var(--status-rose);
+  color: #ff8080;
+}
+
+/* --------------------------------------------------------------------------
+   TABBED JSON INSPECTOR & FIELD BADGES
+   -------------------------------------------------------------------------- */
+.json-tab-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.json-tab-btn {
+  background: var(--space-input);
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.json-tab-btn:hover {
+  color: var(--starlight-pure);
+  border-color: var(--starlight-border-active);
+}
+
+.json-tab-btn.active {
+  background: var(--space-panel-alt);
+  border-color: var(--nebula-bright);
+  color: var(--nebula-bright);
+  font-weight: 600;
+}
+
+.field-valid-badge {
+  font-family: var(--font-hud);
+  font-size: 9.5px;
+  padding: 2px 6px;
+  border: 1px solid var(--starlight-border);
+  color: var(--starlight-muted);
+  background: var(--space-void);
+  transition: all 0.2s ease;
+}
+
+.field-valid-badge.valid {
+  border-color: var(--status-emerald);
+  color: var(--status-emerald);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+.field-valid-badge.invalid {
+  border-color: var(--status-rose);
+  color: var(--status-rose);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.text-emerald { color: var(--status-emerald) !important; }
+.text-amber { color: var(--status-amber) !important; }
+.text-rose { color: var(--status-rose) !important; }
