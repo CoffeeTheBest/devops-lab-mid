@@ -525,84 +525,90 @@ if (filterInput) {
 }
 
 // ============================================================================
-// BOOT SEQUENCE LOADER ENGINE
+// AUTHENTIC RETRO BIOS COLD BOOT & "LOADING OUT OF NOTHING" ENGINE
 // ============================================================================
-function initBootLoader() {
-  const loader = document.getElementById('cosmicBootLoader');
-  const bar = document.getElementById('bootProgressBar');
-  const pct = document.getElementById('bootPercentText');
-  const status = document.getElementById('bootStatusText');
-  const consoleEl = document.getElementById('bootLogConsole');
-  const skipBtn = document.getElementById('skipBootBtn');
+function initBiosColdBoot() {
+  const biosScreen = document.getElementById('biosColdBoot');
+  const logFeed = document.getElementById('biosLogFeed');
 
-  if (!loader) return;
+  if (!biosScreen) {
+    deployCockpitSectors();
+    return;
+  }
 
-  const steps = [
-    { pct: 18, tag: 'SYS_INIT', msg: 'Mounting Cosmic Obsidian Core & 8x8 Bayer raster...', status: 'OK' },
-    { pct: 38, tag: 'CLO_04', msg: 'Loading CI/CD Quality Gate Automation Harness (Jest + Supertest)...', status: 'OK' },
-    { pct: 58, tag: 'JEST', msg: 'Validating 3 Lab Specification Test Contracts (TC.01, TC.02, TC.03)...', status: 'OK' },
-    { pct: 76, tag: 'NET', msg: 'Probing Local Report Receiver (:5050) & reverse tunnel relay...', status: 'OK' },
-    { pct: 90, tag: 'PAGES', msg: 'Verifying Conditional Deployment Guard (needs: test)...', status: 'OK' },
-    { pct: 100, tag: 'READY', msg: 'Bonus SMTP verified (<6aabfc2d...>). Launching cockpit...', status: 'READY' }
+  const postSteps = [
+    { tag: 'ACPI', msg: 'Primary Display Buffer Initialized [0x05060A]', status: 'OK' },
+    { tag: 'CLO4', msg: 'Detecting CI/CD Automated Test Harness (Jest)', status: 'OK' },
+    { tag: 'JEST', msg: 'Binding 3 Lab Specification Test Contracts (TC.01 - TC.03)', status: 'OK' },
+    { tag: 'NET',  msg: 'Detecting Local HTTP Report Receiver Relay (:5050)', status: 'OK' },
+    { tag: 'PAGES',msg: 'Detecting Conditional Deploy Guard (needs: test)', status: 'OK' },
+    { tag: 'SMTP', msg: 'Bonus Email Notifier Verified (<6aabfc2d...>)', status: 'VERIFIED' },
+    { tag: 'READY',msg: 'All Subsystems Nominal. Dismissing BIOS ROM...', status: 'DONE' }
   ];
 
-  let currentStep = 0;
-  let isDone = false;
+  let stepIdx = 0;
+  let isBootDismissed = false;
 
-  function finishBoot() {
-    if (isDone) return;
-    isDone = true;
-    if (bar) bar.style.width = '100%';
-    if (pct) pct.textContent = '100%';
-    if (status) status.textContent = 'SYSTEMS OPERATIONAL // LAUNCHING COCKPIT';
-    setTimeout(() => {
-      loader.classList.add('boot-completed');
+  async function deployCockpitSectors() {
+    // The screen is now 100% blank.
+    // Each component appears onto the empty screen one-by-one with a distinct visual pause!
+    const sectors = [
+      document.querySelector('.stage-header'),
+      document.querySelector('.stage-col-1'),
+      document.querySelector('.stage-col-2'),
+      document.querySelector('.stage-col-3'),
+      document.querySelector('.stage-footer')
+    ];
 
-      // Trigger the movie-style staggered component-by-component materialization!
-      const viewport = document.getElementById('cockpitViewport');
-      if (viewport) {
-        viewport.classList.add('hud-online');
+    for (let i = 0; i < sectors.length; i++) {
+      if (sectors[i]) {
+        sectors[i].classList.add('sector-online');
+        // Visual pause between sectors so they visibly load out of nothingness!
+        await new Promise(r => setTimeout(r, 420));
       }
+    }
+  }
 
-      setTimeout(() => loader.remove(), 700);
+  function dismissBios() {
+    if (isBootDismissed) return;
+    isBootDismissed = true;
+    biosScreen.classList.add('bios-dismissed');
+    setTimeout(() => {
+      biosScreen.remove();
+      // Start the sequential sector materialization out of pure nothingness!
+      deployCockpitSectors();
     }, 350);
   }
 
-  if (skipBtn) {
-    skipBtn.addEventListener('click', finishBoot);
-  }
+  // Fast boot on click or keypress
+  biosScreen.addEventListener('click', dismissBios);
+  window.addEventListener('keydown', dismissBios, { once: true });
 
-  function advanceStep() {
-    if (isDone || currentStep >= steps.length) {
-      finishBoot();
+  function runNextPostLine() {
+    if (isBootDismissed) return;
+    if (stepIdx >= postSteps.length) {
+      setTimeout(dismissBios, 280);
       return;
     }
 
-    const step = steps[currentStep];
-    if (bar) bar.style.width = `${step.pct}%`;
-    if (pct) pct.textContent = `${step.pct}%`;
-    if (status) status.textContent = step.msg;
-
-    if (consoleEl) {
-      const now = new Date().toTimeString().split(' ')[0];
+    const step = postSteps[stepIdx];
+    if (logFeed) {
       const line = document.createElement('div');
-      line.className = 'boot-log-line';
+      line.className = 'bios-log-entry';
       line.innerHTML = `
-        <span class="boot-log-ts">[${now}]</span>
-        <span class="boot-log-tag">[${step.tag}]</span>
-        <span class="boot-log-msg">${step.msg}</span>
-        <span class="boot-log-status status-ok">[${step.status}]</span>
+        <span class="bios-log-tag">&gt; [${step.tag}]</span>
+        <span class="bios-log-msg">${step.msg}</span>
+        <span class="bios-log-status">[${step.status}]</span>
       `;
-      consoleEl.appendChild(line);
-      consoleEl.scrollTop = consoleEl.scrollHeight;
+      logFeed.appendChild(line);
     }
 
-    currentStep++;
-    const delay = currentStep === steps.length ? 300 : Math.floor(Math.random() * 140) + 160;
-    setTimeout(advanceStep, delay);
+    stepIdx++;
+    const delay = stepIdx === postSteps.length ? 250 : 150;
+    setTimeout(runNextPostLine, delay);
   }
 
-  setTimeout(advanceStep, 200);
+  setTimeout(runNextPostLine, 180);
 }
 
 // ============================================================================
@@ -840,7 +846,7 @@ function initJsonTabs() {
 // INITIALIZATION
 // ============================================================================
 (async function init() {
-  initBootLoader();
+  initBiosColdBoot();
   initLiveTelemetry();
   initQualityGateAudit();
   initWorkflowSimulator();
