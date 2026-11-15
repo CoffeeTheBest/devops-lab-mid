@@ -1506,334 +1506,56 @@ body::after {
 .text-amber { color: var(--status-amber) !important; }
 .text-rose { color: var(--status-rose) !important; }
 
-/* ==========================================================================
-   STAGGERED SCI-FI CINEMATIC HUD MATERIALIZATION (MOVIE-STYLE)
-   Components sequence onto a blank sector one-by-one upon boot completion
-   ========================================================================== */
-.cockpit-viewport:not(.hud-online) .stage-hud-item {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateY(24px) scale(0.975);
-  pointer-events: none;
-}
-
-.cockpit-viewport.hud-online .stage-hud-item {
-  animation: hudMaterialize 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.cockpit-viewport.hud-online .stage-header {
-  animation-delay: 0.10s;
-}
-
-.cockpit-viewport.hud-online .stage-col-1 {
-  animation-delay: 0.32s;
-}
-
-.cockpit-viewport.hud-online .stage-col-2 {
-  animation-delay: 0.54s;
-}
-
-.cockpit-viewport.hud-online .stage-col-3 {
-  animation-delay: 0.76s;
-}
-
-.cockpit-viewport.hud-online .stage-footer {
-  animation-delay: 0.98s;
-}
-
-/* Internal cascading for footer cells */
-.cockpit-viewport:not(.hud-online) .telemetry-cell-quad .telemetry-unit-cell {
-  opacity: 0;
-}
-
-.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(1) {
-  animation: unitCellPop 0.4s ease forwards;
-  animation-delay: 1.08s;
-}
-.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(2) {
-  animation: unitCellPop 0.4s ease forwards;
-  animation-delay: 1.18s;
-}
-.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(3) {
-  animation: unitCellPop 0.4s ease forwards;
-  animation-delay: 1.28s;
-}
-.cockpit-viewport.hud-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(4) {
-  animation: unitCellPop 0.4s ease forwards;
-  animation-delay: 1.38s;
-}
-
-@keyframes hudMaterialize {
-  0% {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(24px) scale(0.975);
-    filter: blur(8px) brightness(2.2);
-    box-shadow: 0 0 50px rgba(168, 85, 247, 0.7);
-    border-color: rgba(192, 132, 252, 0.95);
-  }
-  40% {
-    opacity: 0.85;
-    visibility: visible;
-    filter: blur(2px) brightness(1.6);
-    border-color: var(--nebula-bright);
-    box-shadow: 0 0 35px rgba(168, 85, 247, 0.5);
-  }
-  75% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.005);
-    filter: blur(0px) brightness(1.2);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
-  }
-  100% {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-    filter: blur(0px) brightness(1);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-  }
-}
-
-@keyframes unitCellPop {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-    border-color: var(--nebula-primary);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cockpit-viewport .stage-hud-item,
-  .cockpit-viewport:not(.hud-online) .stage-hud-item,
-  .cockpit-viewport.hud-online .stage-hud-item {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    animation: none !important;
-    filter: none !important;
-    pointer-events: auto !important;
-  }
-}
-
 
 /* ==========================================================================
-   AUTHENTIC RETRO BIOS COLD BOOT & "LOADING OUT OF NOTHING" ENGINE
-   ========================================================================== */
-.bios-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999999;
-  background-color: #030407;
-  color: #cbd5e1;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
-  padding: 32px 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow: hidden;
-  cursor: pointer;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
-}
-
-.bios-screen.bios-dismissed {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.bios-terminal-content {
-  max-width: 880px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.bios-banner-line {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.bios-brand {
-  font-family: var(--font-pixel);
-  font-size: 12.5px;
-  color: var(--nebula-bright);
-  letter-spacing: 0.08em;
-}
-
-.bios-meta {
-  color: var(--starlight-muted);
-  font-size: 11.5px;
-}
-
-.bios-sub-line {
-  color: var(--stellar-cyan);
-  font-size: 12px;
-}
-
-.bios-divider {
-  color: var(--starlight-border-active);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  user-select: none;
-}
-
-.bios-specs-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 12px;
-  color: var(--starlight-body);
-}
-
-.bios-specs-grid span {
-  color: var(--starlight-muted);
-  display: inline-block;
-  min-width: 125px;
-}
-
-.bios-log-feed {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-top: 4px;
-  min-height: 120px;
-}
-
-.bios-log-entry {
-  font-size: 12px;
-  display: flex;
-  gap: 8px;
-  animation: biosLineIn 0.12s ease;
-}
-
-@keyframes biosLineIn {
-  from { opacity: 0; transform: translateX(-4px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.bios-log-tag {
-  color: var(--nebula-bright);
-}
-
-.bios-log-msg {
-  color: var(--starlight-light);
-  flex-grow: 1;
-}
-
-.bios-log-status {
-  font-weight: 700;
-  color: var(--status-emerald);
-}
-
-.bios-footer-prompt {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-  font-size: 12px;
-  color: var(--starlight-muted);
-}
-
-.bios-cursor-pulse {
-  color: var(--nebula-bright);
-  font-weight: 900;
-  font-size: 14px;
-  animation: biosCursorBlink 0.8s infinite;
-}
-
-@keyframes biosCursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.bios-hint {
-  font-size: 11px;
-  color: #64748b;
-  border: 1px dashed var(--starlight-border);
-  padding: 3px 8px;
-}
-
-/* ==========================================================================
-   LOADING OUT OF PURE NOTHINGNESS (COMPONENT-BY-COMPONENT SECTOR MATERIALIZE)
-   Each section remains 100% invisible on a blank screen until triggered!
+   SEQUENTIAL COMPONENT REVEAL (POST-LOADER)
+   Components appear one-by-one onto the blank canvas with a theatrical delay
    ========================================================================== */
 .stage-hud-item {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateY(32px) scale(0.965);
-  pointer-events: none !important;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px) scale(0.975);
+  pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.stage-hud-item.sector-online {
-  animation: sectorMaterialize 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.stage-hud-item.component-revealed {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: auto !important;
+  animation: componentMaterialize 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes sectorMaterialize {
+@keyframes componentMaterialize {
   0% {
     opacity: 0;
-    visibility: hidden;
-    transform: translateY(32px) scale(0.965);
-    filter: blur(10px) brightness(2.8);
-    box-shadow: 0 0 65px rgba(168, 85, 247, 0.85);
-    border-color: #e9d5ff;
+    transform: translateY(24px) scale(0.975);
+    filter: blur(8px) brightness(2.4);
+    box-shadow: 0 0 50px rgba(168, 85, 247, 0.75);
+    border-color: #d8b4fe;
   }
-  35% {
-    opacity: 0.9;
-    visibility: visible;
-    filter: blur(3px) brightness(1.7);
-    box-shadow: 0 0 45px rgba(168, 85, 247, 0.6);
+  45% {
+    opacity: 0.95;
+    filter: blur(2px) brightness(1.6);
+    box-shadow: 0 0 35px rgba(168, 85, 247, 0.5);
     border-color: var(--nebula-bright);
-  }
-  75% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.006);
-    filter: blur(0px) brightness(1.2);
-    box-shadow: 0 0 24px rgba(168, 85, 247, 0.35);
   }
   100% {
     opacity: 1;
-    visibility: visible;
     transform: translateY(0) scale(1);
     filter: blur(0px) brightness(1);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-    pointer-events: auto !important;
   }
 }
-
-/* Internal cascading for footer cells */
-.telemetry-cell-quad .telemetry-unit-cell {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-.stage-footer.sector-online .telemetry-cell-quad .telemetry-unit-cell {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.stage-footer.sector-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(1) { transition-delay: 0.1s; }
-.stage-footer.sector-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(2) { transition-delay: 0.2s; }
-.stage-footer.sector-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(3) { transition-delay: 0.3s; }
-.stage-footer.sector-online .telemetry-cell-quad .telemetry-unit-cell:nth-child(4) { transition-delay: 0.4s; }
 
 @media (prefers-reduced-motion: reduce) {
   .stage-hud-item,
-  .stage-hud-item.sector-online {
+  .stage-hud-item.component-revealed {
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
     animation: none !important;
-    filter: none !important;
     pointer-events: auto !important;
   }
 }
@@ -1845,35 +1567,48 @@ body::after {
   <!-- =========================================================================
        RETRO-TERMINAL TELEMETRY BOOT SEQUENCE LOADER
        ========================================================================= -->
-    <!-- =========================================================================
-       AUTHENTIC RETRO CUI-BIOS COLD BOOT SEQUENCE
-       ========================================================================= -->
-  <div id="biosColdBoot" class="bios-screen" aria-label="System Cold Booting">
-    <div class="bios-terminal-content">
-      <div class="bios-banner-line">
-        <span class="bios-brand">COMSATS CUI-BIOS (v4.18)</span>
-        <span class="bios-meta">(C) 2026 DEVOPS ARCHITECTURE LAB</span>
-      </div>
-      <div class="bios-sub-line">CSC418: CLOUD AUTOMATION KERNEL // ATTOCK CAMPUS ROOT</div>
-      
-      <div class="bios-divider">================================================================================</div>
-      
-      <div class="bios-specs-grid">
-        <div><span>CPU TYPE</span> : 16-Core Cloud Virtual Host @ 3.80GHz</div>
-        <div><span>BASE MEMORY</span> : 32768 MB OK</div>
-        <div><span>DISPLAY VRAM</span> : 8x8 Bayer Dither Engine [Obsidian Void]</div>
-        <div><span>STORAGE BUFFER</span> : HTML5 LocalStorage Persistence VFS</div>
+  <div id="cosmicBootLoader" class="boot-screen-overlay" aria-label="System Initializing">
+    <div class="boot-terminal-window">
+      <div class="boot-header-bar">
+        <div class="boot-title-group">
+          <span class="boot-hex-code">SYS.BOOT // KERNEL_INIT</span>
+          <span class="boot-sub-tag">COMSATS CSC418 DEVOPS AUTOMATION</span>
+        </div>
+        <button type="button" id="skipBootBtn" class="boot-skip-button" title="Fast Boot into Cockpit">
+          [ FAST_BOOT &gt;&gt; ]
+        </button>
       </div>
 
-      <div class="bios-divider">--------------------------------------------------------------------------------</div>
-      
-      <div class="bios-log-feed" id="biosLogFeed">
-        <!-- Live POST lines type out here -->
-      </div>
+      <div class="boot-body">
+        <div class="boot-ascii-banner">
+  ██████╗ ███████╗██╗   ██╗ ██████╗ ██████╗ ███████╗     ██████╗██╗
+  ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔════╝    ██╔════╝██║
+  ██║  ██║█████╗  ██║   ██║██║   ██║██████╔╝███████╗    ██║     ██║
+  ██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║██╔═══╝ ╚════██║    ██║     ██║
+  ██████╔╝███████╗ ╚████╔╝ ╚██████╔╝██║     ███████║    ╚██████╗██║
+  ╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚═╝     ╚══════╝     ╚═════╝╚═╝
+        </div>
 
-      <div class="bios-footer-prompt">
-        <span class="bios-cursor-pulse">_</span>
-        <span class="bios-hint">[ Click anywhere or press any key for FAST BOOT ]</span>
+        <div class="boot-info-deck">
+          <div><span class="boot-meta-label">INSTITUTION:</span> <span class="boot-meta-val">COMSATS ATTOCK</span></div>
+          <div><span class="boot-meta-label">COURSE:</span> <span class="boot-meta-val">CSC418 CLOUD DEVOPS</span></div>
+          <div><span class="boot-meta-label">PIPELINE:</span> <span class="boot-meta-val">GITHUB ACTIONS</span></div>
+          <div><span class="boot-meta-label">ISOLATION:</span> <span class="boot-meta-val">STRICT CI ENFORCED</span></div>
+        </div>
+
+        <div class="boot-progress-frame">
+          <div class="boot-progress-labels">
+            <span id="bootStatusText">INITIALIZING KERNEL &amp; TELEMETRY HARNESS...</span>
+            <span id="bootPercentText">0%</span>
+          </div>
+          <div class="boot-progress-bar-track">
+            <div id="bootProgressBar" class="boot-progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="boot-log-console" id="bootLogConsole">
+          <!-- Populated sequentially by app.js -->
+        </div>
       </div>
     </div>
   </div>
@@ -1881,7 +1616,7 @@ body::after {
   <!-- Omarchy-Inspired Etched Pixel Dither Canvas Layer -->
   <canvas id="omarchyHeroCanvas" class="omarchy-hero-canvas" aria-hidden="true"></canvas>
 
-  <div class="cockpit-viewport" id="cockpitViewport">
+  <div class="cockpit-viewport">
 
     <!-- TOP HEADER / COSMIC HUD -->
     <header class="cosmic-banner stage-hud-item stage-header">

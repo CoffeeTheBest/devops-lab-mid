@@ -525,90 +525,81 @@ if (filterInput) {
 }
 
 // ============================================================================
-// AUTHENTIC RETRO BIOS COLD BOOT & "LOADING OUT OF NOTHING" ENGINE
+// BOOT SEQUENCE LOADER ENGINE
 // ============================================================================
-function initBiosColdBoot() {
-  const biosScreen = document.getElementById('biosColdBoot');
-  const logFeed = document.getElementById('biosLogFeed');
+function initBootLoader() {
+  const loader = document.getElementById('cosmicBootLoader');
+  const bar = document.getElementById('bootProgressBar');
+  const pct = document.getElementById('bootPercentText');
+  const status = document.getElementById('bootStatusText');
+  const consoleEl = document.getElementById('bootLogConsole');
+  const skipBtn = document.getElementById('skipBootBtn');
 
-  if (!biosScreen) {
-    deployCockpitSectors();
-    return;
-  }
+  if (!loader) return;
 
-  const postSteps = [
-    { tag: 'ACPI', msg: 'Primary Display Buffer Initialized [0x05060A]', status: 'OK' },
-    { tag: 'CLO4', msg: 'Detecting CI/CD Automated Test Harness (Jest)', status: 'OK' },
-    { tag: 'JEST', msg: 'Binding 3 Lab Specification Test Contracts (TC.01 - TC.03)', status: 'OK' },
-    { tag: 'NET',  msg: 'Detecting Local HTTP Report Receiver Relay (:5050)', status: 'OK' },
-    { tag: 'PAGES',msg: 'Detecting Conditional Deploy Guard (needs: test)', status: 'OK' },
-    { tag: 'SMTP', msg: 'Bonus Email Notifier Verified (<6aabfc2d...>)', status: 'VERIFIED' },
-    { tag: 'READY',msg: 'All Subsystems Nominal. Dismissing BIOS ROM...', status: 'DONE' }
+  const steps = [
+    { pct: 18, tag: 'SYS_INIT', msg: 'Mounting Cosmic Obsidian Core & 8x8 Bayer raster...', status: 'OK' },
+    { pct: 38, tag: 'CLO_04', msg: 'Loading CI/CD Quality Gate Automation Harness (Jest + Supertest)...', status: 'OK' },
+    { pct: 58, tag: 'JEST', msg: 'Validating 3 Lab Specification Test Contracts (TC.01, TC.02, TC.03)...', status: 'OK' },
+    { pct: 76, tag: 'NET', msg: 'Probing Local Report Receiver (:5050) & reverse tunnel relay...', status: 'OK' },
+    { pct: 90, tag: 'PAGES', msg: 'Verifying Conditional Deployment Guard (needs: test)...', status: 'OK' },
+    { pct: 100, tag: 'READY', msg: 'Bonus SMTP verified (<6aabfc2d...>). Launching cockpit...', status: 'READY' }
   ];
 
-  let stepIdx = 0;
-  let isBootDismissed = false;
+  let currentStep = 0;
+  let isDone = false;
 
-  async function deployCockpitSectors() {
-    // The screen is now 100% blank.
-    // Each component appears onto the empty screen one-by-one with a distinct visual pause!
-    const sectors = [
-      document.querySelector('.stage-header'),
-      document.querySelector('.stage-col-1'),
-      document.querySelector('.stage-col-2'),
-      document.querySelector('.stage-col-3'),
-      document.querySelector('.stage-footer')
-    ];
-
-    for (let i = 0; i < sectors.length; i++) {
-      if (sectors[i]) {
-        sectors[i].classList.add('sector-online');
-        // Visual pause between sectors so they visibly load out of nothingness!
-        await new Promise(r => setTimeout(r, 420));
-      }
-    }
-  }
-
-  function dismissBios() {
-    if (isBootDismissed) return;
-    isBootDismissed = true;
-    biosScreen.classList.add('bios-dismissed');
+  function finishBoot() {
+    if (isDone) return;
+    isDone = true;
+    if (bar) bar.style.width = '100%';
+    if (pct) pct.textContent = '100%';
+    if (status) status.textContent = 'SYSTEMS OPERATIONAL // LAUNCHING COCKPIT';
     setTimeout(() => {
-      biosScreen.remove();
-      // Start the sequential sector materialization out of pure nothingness!
-      deployCockpitSectors();
-    }, 350);
+      loader.classList.add('boot-completed');
+      setTimeout(() => {
+        loader.remove();
+        // Start sequential component-by-component reveal!
+        revealComponentsSequentially();
+      }, 350);
+    }, 300);
   }
 
-  // Fast boot on click or keypress
-  biosScreen.addEventListener('click', dismissBios);
-  window.addEventListener('keydown', dismissBios, { once: true });
+  if (skipBtn) {
+    skipBtn.addEventListener('click', finishBoot);
+  }
 
-  function runNextPostLine() {
-    if (isBootDismissed) return;
-    if (stepIdx >= postSteps.length) {
-      setTimeout(dismissBios, 280);
+  function advanceStep() {
+    if (isDone || currentStep >= steps.length) {
+      finishBoot();
       return;
     }
 
-    const step = postSteps[stepIdx];
-    if (logFeed) {
+    const step = steps[currentStep];
+    if (bar) bar.style.width = `${step.pct}%`;
+    if (pct) pct.textContent = `${step.pct}%`;
+    if (status) status.textContent = step.msg;
+
+    if (consoleEl) {
+      const now = new Date().toTimeString().split(' ')[0];
       const line = document.createElement('div');
-      line.className = 'bios-log-entry';
+      line.className = 'boot-log-line';
       line.innerHTML = `
-        <span class="bios-log-tag">&gt; [${step.tag}]</span>
-        <span class="bios-log-msg">${step.msg}</span>
-        <span class="bios-log-status">[${step.status}]</span>
+        <span class="boot-log-ts">[${now}]</span>
+        <span class="boot-log-tag">[${step.tag}]</span>
+        <span class="boot-log-msg">${step.msg}</span>
+        <span class="boot-log-status status-ok">[${step.status}]</span>
       `;
-      logFeed.appendChild(line);
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
     }
 
-    stepIdx++;
-    const delay = stepIdx === postSteps.length ? 250 : 150;
-    setTimeout(runNextPostLine, delay);
+    currentStep++;
+    const delay = currentStep === steps.length ? 300 : Math.floor(Math.random() * 140) + 160;
+    setTimeout(advanceStep, delay);
   }
 
-  setTimeout(runNextPostLine, 180);
+  setTimeout(advanceStep, 200);
 }
 
 // ============================================================================
@@ -842,11 +833,39 @@ function initJsonTabs() {
   });
 }
 
+
+// Sequential component reveal after loader completes
+async function revealComponentsSequentially() {
+  const components = [
+    document.querySelector('.stage-header'),
+    document.querySelector('.stage-col-1'),
+    document.querySelector('.stage-col-2'),
+    document.querySelector('.stage-col-3'),
+    document.querySelector('.stage-footer')
+  ];
+
+  for (let i = 0; i < components.length; i++) {
+    const el = components[i];
+    if (el) {
+      el.classList.add('component-revealed');
+      // Visual 280ms pause between each component so they appear one by one!
+      await new Promise(r => setTimeout(r, 280));
+    }
+  }
+}
+
+// Safety timeout: ensure everything is visible even if script is interrupted
+setTimeout(() => {
+  document.querySelectorAll('.stage-hud-item').forEach(el => {
+    el.classList.add('component-revealed');
+  });
+}, 2500);
+
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
 (async function init() {
-  initBiosColdBoot();
+  initBootLoader();
   initLiveTelemetry();
   initQualityGateAudit();
   initWorkflowSimulator();
