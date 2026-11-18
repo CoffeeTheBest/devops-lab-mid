@@ -107,33 +107,120 @@ const simActiveState = document.getElementById('simActiveState');
 const tabPayloadBtn = document.getElementById('tabPayloadBtn');
 const tabReportBtn = document.getElementById('tabReportBtn');
 
-// Validate URL helper
+// ============================================================================
+// SPECIFIC & TRUE FIELD VALIDATION ENGINE
+// ============================================================================
+
+// Academic Registration Number pattern (COMSATS SP21-BCS-042, FA20-BSE-001, etc.)
+const REG_NO_PATTERN = /^([a-zA-Z]{2}\d{2}-[a-zA-Z]{2,5}-\d{1,4}|[a-zA-Z0-9]{2,8}([-/][a-zA-Z0-9]{2,8}){1,3})$/i;
+const NAME_CHARS_PATTERN = /^[a-zA-Z\s.'-]+$/;
+
+function isValidName(name) {
+  if (typeof name !== 'string') return false;
+  const trimmed = name.trim();
+  if (trimmed.length < 2 || trimmed.length > 70) return false;
+  if (!NAME_CHARS_PATTERN.test(trimmed)) return false;
+  const letters = trimmed.match(/[a-zA-Z]/g);
+  return letters !== null && letters.length >= 2;
+}
+
+function isValidRegNo(regNo) {
+  if (typeof regNo !== 'string') return false;
+  const trimmed = regNo.trim();
+  return REG_NO_PATTERN.test(trimmed);
+}
+
+function isValidAssignmentTitle(title) {
+  if (typeof title !== 'string') return false;
+  const trimmed = title.trim();
+  if (trimmed.length < 3 || trimmed.length > 120) return false;
+  const alphanum = trimmed.match(/[a-zA-Z0-9]/g);
+  return alphanum !== null && alphanum.length >= 2;
+}
+
 function isValidUrl(urlString) {
   if (typeof urlString !== 'string' || !urlString.trim()) return false;
+  const trimmed = urlString.trim();
+  if (/\s/.test(trimmed)) return false;
   try {
-    const parsed = new URL(urlString.trim());
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+    if (!parsed.hostname || parsed.hostname.length < 1) return false;
+    return true;
   } catch {
     return false;
   }
 }
 
-// Client-side validator (matches src/validator.js)
+// Client-side validator (exact mirror of src/validator.js)
 function validateClientSubmission(payload) {
   const errors = [];
+  const fieldErrors = {};
+
   if (!payload || typeof payload !== 'object') {
-    return { isValid: false, errors: ['Request payload must be a valid JSON object.'] };
+    return { isValid: false, errors: ['Request payload must be a valid JSON object.'], fieldErrors: {} };
   }
+
   const { name, regNo, assignmentTitle, submissionUrl } = payload;
-  if (!name || typeof name !== 'string' || !name.trim()) errors.push('Student name is required.');
-  if (!regNo || typeof regNo !== 'string' || !regNo.trim()) errors.push('Registration number is required.');
-  if (!assignmentTitle || typeof assignmentTitle !== 'string' || !assignmentTitle.trim()) errors.push('Assignment title is required.');
+
+  // 1. Student Name
+  if (!name || typeof name !== 'string' || !name.trim()) {
+    errors.push('Student name is required.');
+    fieldErrors.name = 'Student name is required.';
+  } else if (!isValidName(name)) {
+    const trimmed = name.trim();
+    if (trimmed.length < 2) {
+      errors.push('Student name must be at least 2 characters long.');
+      fieldErrors.name = 'Student name must be at least 2 characters.';
+    } else if (trimmed.length > 70) {
+      errors.push('Student name cannot exceed 70 characters.');
+      fieldErrors.name = 'Student name cannot exceed 70 characters.';
+    } else if (!NAME_CHARS_PATTERN.test(trimmed)) {
+      errors.push('Student name can only contain letters, spaces, hyphens, and periods.');
+      fieldErrors.name = 'Letters, spaces, hyphens, and periods only.';
+    } else {
+      errors.push('Student name must contain alphabetical letters.');
+      fieldErrors.name = 'Must contain alphabetical letters.';
+    }
+  }
+
+  // 2. Registration Number
+  if (!regNo || typeof regNo !== 'string' || !regNo.trim()) {
+    errors.push('Registration number is required.');
+    fieldErrors.regNo = 'Registration number is required.';
+  } else if (!isValidRegNo(regNo)) {
+    errors.push('Invalid registration number format. Expected format: SP21-BCS-042 (e.g. [Session][Year]-[Program]-[RollNo]).');
+    fieldErrors.regNo = 'Format: SP21-BCS-042 (Session-Program-Roll)';
+  }
+
+  // 3. Assignment Title
+  if (!assignmentTitle || typeof assignmentTitle !== 'string' || !assignmentTitle.trim()) {
+    errors.push('Assignment title is required.');
+    fieldErrors.assignmentTitle = 'Assignment title is required.';
+  } else if (!isValidAssignmentTitle(assignmentTitle)) {
+    const trimmed = assignmentTitle.trim();
+    if (trimmed.length < 3) {
+      errors.push('Assignment title must be at least 3 characters long.');
+      fieldErrors.assignmentTitle = 'Title must be at least 3 characters.';
+    } else if (trimmed.length > 120) {
+      errors.push('Assignment title cannot exceed 120 characters.');
+      fieldErrors.assignmentTitle = 'Title cannot exceed 120 characters.';
+    } else {
+      errors.push('Assignment title must contain alphanumeric text.');
+      fieldErrors.assignmentTitle = 'Title must contain alphanumeric text.';
+    }
+  }
+
+  // 4. Submission URL
   if (!submissionUrl || typeof submissionUrl !== 'string' || !submissionUrl.trim()) {
     errors.push('Submission URL is required.');
+    fieldErrors.submissionUrl = 'Submission URL is required.';
   } else if (!isValidUrl(submissionUrl)) {
     errors.push('Invalid submission URL. Must start with http:// or https://');
+    fieldErrors.submissionUrl = 'Must start with http:// or https:// and be a valid URL.';
   }
-  return { isValid: errors.length === 0, errors };
+
+  return { isValid: errors.length === 0, errors, fieldErrors };
 }
 
 // Update real-time JSON payload inspector or test report
@@ -177,32 +264,47 @@ function updateFieldBadges() {
   const urlVal = urlInput ? urlInput.value.trim() : '';
 
   if (nameBadge) {
-    if (nameVal) {
-      nameBadge.textContent = '[OK ✓]';
-      nameBadge.className = 'input-meta-code field-valid-badge valid';
-    } else {
+    if (!nameVal) {
       nameBadge.textContent = '[REQUIRED]';
       nameBadge.className = 'input-meta-code field-valid-badge';
+    } else if (isValidName(nameVal)) {
+      nameBadge.textContent = '[NAME: VALID ✓]';
+      nameBadge.className = 'input-meta-code field-valid-badge valid';
+      if (nameError) nameError.textContent = '';
+      if (studentNameInput) studentNameInput.classList.remove('is-invalid');
+    } else {
+      nameBadge.textContent = '[NAME: LETTERS ONLY]';
+      nameBadge.className = 'input-meta-code field-valid-badge invalid';
     }
   }
 
   if (regNoBadge) {
-    if (regNoVal) {
-      regNoBadge.textContent = '[OK ✓]';
-      regNoBadge.className = 'input-meta-code field-valid-badge valid';
-    } else {
+    if (!regNoVal) {
       regNoBadge.textContent = '[REQUIRED]';
       regNoBadge.className = 'input-meta-code field-valid-badge';
+    } else if (isValidRegNo(regNoVal)) {
+      regNoBadge.textContent = '[REG_NO: VALID ✓]';
+      regNoBadge.className = 'input-meta-code field-valid-badge valid';
+      if (regNoError) regNoError.textContent = '';
+      if (regNoInput) regNoInput.classList.remove('is-invalid');
+    } else {
+      regNoBadge.textContent = '[FORMAT: SP21-BCS-042]';
+      regNoBadge.className = 'input-meta-code field-valid-badge invalid';
     }
   }
 
   if (titleBadge) {
-    if (titleVal) {
-      titleBadge.textContent = '[OK ✓]';
-      titleBadge.className = 'input-meta-code field-valid-badge valid';
-    } else {
+    if (!titleVal) {
       titleBadge.textContent = '[REQUIRED]';
       titleBadge.className = 'input-meta-code field-valid-badge';
+    } else if (isValidAssignmentTitle(titleVal)) {
+      titleBadge.textContent = '[TITLE: VALID ✓]';
+      titleBadge.className = 'input-meta-code field-valid-badge valid';
+      if (titleError) titleError.textContent = '';
+      if (titleInput) titleInput.classList.remove('is-invalid');
+    } else {
+      titleBadge.textContent = '[MIN 3 CHARACTERS]';
+      titleBadge.className = 'input-meta-code field-valid-badge invalid';
     }
   }
 
@@ -211,10 +313,12 @@ function updateFieldBadges() {
       urlBadge.textContent = '[URI / PROTOCOL_CHECK]';
       urlBadge.className = 'input-meta-code field-valid-badge';
     } else if (isValidUrl(urlVal)) {
-      urlBadge.textContent = urlVal.startsWith('https:') ? '[HTTPS // VALID]' : '[HTTP // VALID]';
+      urlBadge.textContent = urlVal.startsWith('https:') ? '[HTTPS // VALID ✓]' : '[HTTP // VALID ✓]';
       urlBadge.className = 'input-meta-code field-valid-badge valid';
+      if (urlError) urlError.textContent = '';
+      if (urlInput) urlInput.classList.remove('is-invalid');
     } else {
-      urlBadge.textContent = '[INVALID_PROTOCOL]';
+      urlBadge.textContent = '[MUST BE HTTP(S)]';
       urlBadge.className = 'input-meta-code field-valid-badge invalid';
     }
   }
@@ -382,42 +486,33 @@ if (form) {
     e.preventDefault();
     clearFieldErrors();
 
-    const name = studentNameInput.value.trim();
-    const regNo = regNoInput.value.trim();
-    const assignmentTitle = titleInput.value.trim();
-    const submissionUrl = urlInput.value.trim();
+    const name = studentNameInput ? studentNameInput.value.trim() : '';
+    const regNo = regNoInput ? regNoInput.value.trim() : '';
+    const assignmentTitle = titleInput ? titleInput.value.trim() : '';
+    const submissionUrl = urlInput ? urlInput.value.trim() : '';
 
-    let hasError = false;
+    const validation = validateClientSubmission({ name, regNo, assignmentTitle, submissionUrl });
 
-    if (!name) {
-      if (nameError) nameError.textContent = 'ERR_01: STUDENT_NAME_REQUIRED';
-      studentNameInput.classList.add('is-invalid');
-      hasError = true;
-    }
-    if (!regNo) {
-      if (regNoError) regNoError.textContent = 'ERR_02: REGISTRATION_NUMBER_REQUIRED';
-      regNoInput.classList.add('is-invalid');
-      hasError = true;
-    }
-    if (!assignmentTitle) {
-      if (titleError) titleError.textContent = 'ERR_03: ASSIGNMENT_TITLE_REQUIRED';
-      titleInput.classList.add('is-invalid');
-      hasError = true;
-    }
-    if (!submissionUrl) {
-      if (urlError) urlError.textContent = 'ERR_04: REPOSITORY_URL_REQUIRED';
-      urlInput.classList.add('is-invalid');
-      hasError = true;
-    } else if (!isValidUrl(submissionUrl)) {
-      if (urlError) urlError.textContent = 'ERR_05: INVALID_URI_PROTOCOL [MUST_BE_HTTP_OR_HTTPS]';
-      urlInput.classList.add('is-invalid');
-      hasError = true;
-    }
+    if (!validation.isValid) {
+      if (validation.fieldErrors.name) {
+        if (nameError) nameError.textContent = `ERR: ${validation.fieldErrors.name}`;
+        if (studentNameInput) studentNameInput.classList.add('is-invalid');
+      }
+      if (validation.fieldErrors.regNo) {
+        if (regNoError) regNoError.textContent = `ERR: ${validation.fieldErrors.regNo}`;
+        if (regNoInput) regNoInput.classList.add('is-invalid');
+      }
+      if (validation.fieldErrors.assignmentTitle) {
+        if (titleError) titleError.textContent = `ERR: ${validation.fieldErrors.assignmentTitle}`;
+        if (titleInput) titleInput.classList.add('is-invalid');
+      }
+      if (validation.fieldErrors.submissionUrl) {
+        if (urlError) urlError.textContent = `ERR: ${validation.fieldErrors.submissionUrl}`;
+        if (urlInput) urlInput.classList.add('is-invalid');
+      }
 
-    updateFieldBadges();
-
-    if (hasError) {
-      showAlert('EXEC_ABORT: Resolve input validation errors highlighted above.', 'error');
+      updateFieldBadges();
+      showAlert('EXEC_ABORT: Specific field validation constraints violated. See highlights below.', 'error');
       return;
     }
 
@@ -439,12 +534,23 @@ if (form) {
           await fetchSubmissions();
         } else {
           showAlert(data.error || 'EXEC_FAIL: Backend rejected payload.', 'error');
-          if (data.error?.toLowerCase().includes('registration')) {
-            if (regNoError) regNoError.textContent = `ERR: ${data.error}`;
-            regNoInput.classList.add('is-invalid');
-          } else if (data.error?.toLowerCase().includes('url')) {
-            if (urlError) urlError.textContent = `ERR: ${data.error}`;
-            urlInput.classList.add('is-invalid');
+          if (data.fieldErrors) {
+            if (data.fieldErrors.name && nameError) {
+              nameError.textContent = `ERR: ${data.fieldErrors.name}`;
+              if (studentNameInput) studentNameInput.classList.add('is-invalid');
+            }
+            if (data.fieldErrors.regNo && regNoError) {
+              regNoError.textContent = `ERR: ${data.fieldErrors.regNo}`;
+              if (regNoInput) regNoInput.classList.add('is-invalid');
+            }
+            if (data.fieldErrors.assignmentTitle && titleError) {
+              titleError.textContent = `ERR: ${data.fieldErrors.assignmentTitle}`;
+              if (titleInput) titleInput.classList.add('is-invalid');
+            }
+            if (data.fieldErrors.submissionUrl && urlError) {
+              urlError.textContent = `ERR: ${data.fieldErrors.submissionUrl}`;
+              if (urlInput) urlInput.classList.add('is-invalid');
+            }
           }
         }
       } else {

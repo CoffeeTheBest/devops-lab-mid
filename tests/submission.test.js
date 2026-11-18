@@ -108,4 +108,75 @@ describe('Assignment Submission Portal Tests', () => {
     expect(postResponse.body.success).toBe(false);
     expect(postResponse.body.error).toBeDefined();
   });
+
+  // Specific and True Validation Tests for Each Field
+  describe('Specific & True Field Validation Rules', () => {
+    test('Malformed registration number format is rejected', async () => {
+      const invalidRegPayload = {
+        name: 'Muhammad Huzaifa',
+        regNo: '12345678', // Pure numbers, missing session & program
+        assignmentTitle: 'DevOps CI/CD Lab',
+        submissionUrl: 'https://github.com/huzaifa/devops-lab-mid'
+      };
+
+      const res = await request(app)
+        .post('/api/submissions')
+        .send(invalidRegPayload)
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/registration number format/i);
+    });
+
+    test('Invalid student name containing digits or symbols is rejected', async () => {
+      const invalidNamePayload = {
+        name: 'Huzaifa123!!', // Digits and symbols
+        regNo: 'SP21-BCS-042',
+        assignmentTitle: 'DevOps CI/CD Lab',
+        submissionUrl: 'https://github.com/huzaifa/devops-lab-mid'
+      };
+
+      const res = await request(app)
+        .post('/api/submissions')
+        .send(invalidNamePayload)
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/student name/i);
+    });
+
+    test('Assignment title with insufficient characters is rejected', async () => {
+      const invalidTitlePayload = {
+        name: 'Muhammad Huzaifa',
+        regNo: 'SP21-BCS-042',
+        assignmentTitle: 'ab', // Too short (min 3 chars)
+        submissionUrl: 'https://github.com/huzaifa/devops-lab-mid'
+      };
+
+      const res = await request(app)
+        .post('/api/submissions')
+        .send(invalidTitlePayload)
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/assignment title/i);
+    });
+
+    test('Submission URL with spaces or missing domain is rejected', async () => {
+      const invalidUrlPayload = {
+        name: 'Muhammad Huzaifa',
+        regNo: 'SP21-BCS-042',
+        assignmentTitle: 'DevOps CI/CD Lab',
+        submissionUrl: 'https://github.com/invalid path with spaces'
+      };
+
+      const res = await request(app)
+        .post('/api/submissions')
+        .send(invalidUrlPayload)
+        .expect(400);
+
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/submission url/i);
+    });
+  });
 });

@@ -37,7 +37,8 @@ app.post('/api/submissions', (req, res) => {
     return res.status(400).json({
       success: false,
       error: validation.errors[0],
-      errors: validation.errors
+      errors: validation.errors,
+      fieldErrors: validation.fieldErrors
     });
   }
 
