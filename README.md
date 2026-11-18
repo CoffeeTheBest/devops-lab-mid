@@ -206,7 +206,7 @@ Follow this 3-step demonstration required by Task 5:
    ```
 3. **Observation:**
    - In GitHub Actions: Workflow completes with **green checkmark (Passed)**.
-   - On your local computer: `test-report.json` updates automatically with `"overallStatus": "PASSED"`, 4 passed tests, and 0 failures.
+   - On your local computer: `test-report.json` updates automatically with `"overallStatus": "PASSED"`, 8 passed tests, and 0 failures.
 
 ### Step 2: Introduce a Defect (Failing Run)
 1. Open [`src/validator.js`](file:///home/huzaifa/Projects/Work/University%20Stuff/DevOPs/lab/mid/src/validator.js) and intentionally break validation (for example, comment out the registration number validation or invert the URL condition):
@@ -251,3 +251,10 @@ Follow this 3-step demonstration required by Task 5:
 2. **Automated Email Reports (5 marks):**
    - Implemented via [`scripts/send-email.js`](file://scripts/send-email.js).
    - Runs under `if: always()`, transmitting formatted HTML test results and JSON attachments directly to the specified inbox for both passing and failing pipeline runs.
+
+---
+
+## 📄 Laboratory Mid-Term Examination Report
+
+The full, publication-grade examination report with complete architecture diagrams, implementation code excerpts, and screenshot evidence is compiled and available in the repository root:
+- [**DevOps_LabMid_Report_Muhammad_Huzaifa.pdf**](./DevOps_LabMid_Report_Muhammad_Huzaifa.pdf)
